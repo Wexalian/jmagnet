@@ -51,7 +51,7 @@ publishing {
             pom {
                 name = 'jmagnet'
                 packaging = 'jar'
-                description = 'A Java library to aid in parsing/downloading torrents from magnet links'
+                description = 'A Java library to aid in parsing/downloading torrents from magnet links, designed for use with tv shows'
                 url = 'https://www.github.com/Wexalian/jmagnet'
                 licenses {
                     license {
