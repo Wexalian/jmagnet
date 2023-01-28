@@ -1,2 +1,5 @@
 rootProject.name = 'jmagnet'
 
+include 'jmagnet-core'
+include 'jmagnet-plugin-test'
+

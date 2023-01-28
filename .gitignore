@@ -2,6 +2,8 @@ out
 .gradle
 .idea
 /build
+jmagnet-core/build
+jmagnet-plugin-test/build
 
 gradle.properties
 
