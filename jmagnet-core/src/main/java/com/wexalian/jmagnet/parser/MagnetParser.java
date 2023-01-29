@@ -1,5 +1,6 @@
 package com.wexalian.jmagnet.parser;
 
+import com.wexalian.common.util.StringUtil;
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
@@ -34,13 +35,13 @@ public class MagnetParser {
         
         PARSED++;
         
-        if (!info.isSeason() || !info.isEpisode()) {
+        if (!info.isSeason() || !info.isEpisode() || StringUtil.isBlank(info.getFormattedName())) {
             String displayName = map.get(Magnet.Parameter.DISPLAY_NAME);
             
             NameParseResult result = parseName(displayName);
-            info.setFormattedName(result.formattedName);
             if (result.isSeason) info.setSeason(result.season);
             if (result.isEpisode) info.setEpisode(result.episode);
+            info.setFormattedName(result.formattedName);
         }
         
         List<String> trackerUris = map.getList(Magnet.Parameter.TRACKERS);

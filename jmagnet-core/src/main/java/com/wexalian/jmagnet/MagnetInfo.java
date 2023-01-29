@@ -73,19 +73,19 @@ public class MagnetInfo {
     }
     
     public static MagnetInfo of(String provider) {
-        return new MagnetInfo(provider, -1, -1, false, false, -1, -1, "unknown_name");
+        return new MagnetInfo(provider, -1, -1, false, false, -1, -1, "");
     }
     
     public static MagnetInfo of(String provider, int peers, int seeds) {
-        return new MagnetInfo(provider, peers, seeds, false, false, -1, -1, "unknown_name");
+        return new MagnetInfo(provider, peers, seeds, false, false, -1, -1, "");
     }
     
     public static MagnetInfo of(String provider, int peers, int seeds, int season) {
-        return new MagnetInfo(provider, peers, seeds, true, false, season, -1, "unknown_name");
+        return new MagnetInfo(provider, peers, seeds, true, false, season, -1, "");
     }
     
     public static MagnetInfo of(String provider, int peers, int seeds, int season, int episode) {
-        return new MagnetInfo(provider, peers, seeds, true, false, season, episode, "unknown_name");
+        return new MagnetInfo(provider, peers, seeds, true, false, season, episode, "");
     }
     
     public enum Resolution {
