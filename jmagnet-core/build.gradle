@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation 'com.wexalian.nullability:nullability:0.0.5'
-    implementation 'com.wexalian.common:common:0.0.25-SNAPSHOT'
+    implementation 'com.wexalian.common:common:0.0.26-SNAPSHOT'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
