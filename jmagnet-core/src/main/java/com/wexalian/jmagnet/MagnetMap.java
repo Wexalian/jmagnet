@@ -17,7 +17,8 @@ public class MagnetMap {
     }
     
     public ListWrapper<String> getList(Magnet.Parameter parameter) {
-        return () -> magnetMap.get(parameter);
+        List<String> values = magnetMap.get(parameter);
+        return values == null ? List::of : () -> values;
     }
     
     public Map<Magnet.Parameter, List<String>> getInternalMap() {

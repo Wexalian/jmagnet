@@ -2,24 +2,24 @@ package com.wexalian.jmagnet.plugins;
 
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.provider.IMagnetProvider;
+import com.wexalian.jmagnet.provider.SearchOptions;
 import com.wexalian.nullability.annotations.Nonnull;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 public class EZTVMagnetProvider implements IMagnetProvider {
     @Nonnull
-    public String getName(){
+    public String getName() {
         return "EZTV";
     }
+    
     @Override
-    public Stream<Magnet> provideAll() {
-        return Stream.empty();
+    public List<Magnet> searchAll() {
+        return List.of();
     }
     
     @Override
-    public Stream<Magnet> provide(String query) {
-        return Stream.empty();
+    public List<Magnet> search(SearchOptions options) {
+        return List.of();
     }
-    
-    
 }

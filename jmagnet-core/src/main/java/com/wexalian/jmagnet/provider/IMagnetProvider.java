@@ -3,14 +3,15 @@ package com.wexalian.jmagnet.provider;
 import com.wexalian.common.plugin.IAbstractPlugin;
 import com.wexalian.jmagnet.Magnet;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 public interface IMagnetProvider extends IAbstractPlugin {
-    Stream<Magnet> provideAll();
+    List<Magnet> searchAll();
     
-    Stream<Magnet> provide(String query);
+    List<Magnet> search(SearchOptions options);
+    
     
     default boolean isEnabled() {
-        return false;
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-com.wexalian.jmagnet.plugins.TPBMagnetProvider
+com.wexalian.jmagnet.plugins.piratebay.TPBMagnetProvider
 com.wexalian.jmagnet.plugins.EZTVMagnetProvider
 
 com.wexalian.jmagnet.plugins.temp.TempFileMagnetProvider

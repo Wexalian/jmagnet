@@ -4,9 +4,9 @@ import com.wexalian.common.plugin.PluginLoader;
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.Tracker;
+import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.jmagnet.provider.IMagnetProvider;
 import com.wexalian.jmagnet.tracker.GlobalTrackers;
-import com.wexalian.jmagnet.parser.MagnetParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MagnetParserTest {
     public static final Path PLUGIN_PATH = Path.of(System.getProperty("user.dir"), "..", "jmagnet-plugin-test/build/libs");
+    
+    private static final PluginLoader pluginLoader = PluginLoader.init(PLUGIN_PATH, ServiceLoader::load);
     
     public static final String TEST_MAGNET = "magnet:?xt=urn:btih:CCD685F5E1FC274CA019D42D01559B20778C4924&dn=Family%20Guy%20S21E01%201080p%20WEB%20H264-CAKES&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce";
     public static final String TEST_MAGNET_NAME = "Family%20Guy%20S21E01%201080p%20WEB%20H264-CAKES";
@@ -101,7 +103,7 @@ public class MagnetParserTest {
         List<Tracker> trackers = new ArrayList<>(GlobalTrackers.getGlobalTrackers());
         trackers.sort(Comparator.comparing(Tracker::uri));
         for (Tracker tracker : trackers) {
-            System.out.println("tracker: " + URLDecoder.decode(tracker.uri(), StandardCharsets.UTF_8));
+            System.out.println(URLDecoder.decode(tracker.uri(), StandardCharsets.UTF_8));
         }
     }
     
@@ -129,16 +131,17 @@ public class MagnetParserTest {
     }
     
     private static void testParseNames(List<String> seasons, List<String> episodes, List<String> unknown) {
-        List<IMagnetProvider> providers = PluginLoader.loadPlugins(PLUGIN_PATH, IMagnetProvider.class, ServiceLoader::load);
-    
+        List<IMagnetProvider> providers = pluginLoader.loadPlugins(IMagnetProvider.class);
+        
         for (IMagnetProvider provider : providers) {
-            provider.provideAll().map(Magnet::getInfo).forEach(info -> {
+            for (Magnet magnet : provider.searchAll()) {
+                MagnetInfo info = magnet.getInfo();
                 String formattedName = info.getFormattedName();
-    
+                
                 if (info.isSeason()) seasons.add(formattedName);
                 else if (info.isEpisode()) episodes.add(formattedName);
                 else unknown.add(formattedName);
-            });
+            }
         }
         
         System.out.println("parse_name_results:");
