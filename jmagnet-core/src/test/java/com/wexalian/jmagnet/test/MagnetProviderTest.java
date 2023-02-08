@@ -1,8 +1,8 @@
 package com.wexalian.jmagnet.test;
 
 import com.wexalian.common.plugin.PluginLoader;
-import com.wexalian.jmagnet.provider.IMagnetProvider;
-import com.wexalian.jmagnet.provider.SearchOptions;
+import com.wexalian.jmagnet.api.IMagnetProvider;
+import com.wexalian.jmagnet.api.SearchOptions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -21,7 +21,7 @@ public class MagnetProviderTest {
         List<IMagnetProvider> providers = pluginLoader.loadPlugins(IMagnetProvider.class);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
-            long count = provider.searchAll().size();
+            long count = provider.all().size();
             long time = System.currentTimeMillis() - start;
             
             System.out.println("Provider '" + provider.getName() + "' has loaded " + count + " magnets in " + time + " ms");

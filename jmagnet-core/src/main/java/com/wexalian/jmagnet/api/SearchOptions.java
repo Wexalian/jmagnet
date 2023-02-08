@@ -1,4 +1,4 @@
-package com.wexalian.jmagnet.provider;
+package com.wexalian.jmagnet.api;
 
 public record SearchOptions(String imdbId, String slug, int season, int episode) {
     public SearchOptions() {

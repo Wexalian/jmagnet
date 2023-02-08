@@ -1,8 +1,8 @@
-package com.wexalian.jmagnet.plugins;
+package com.wexalian.jmagnet.impl.magnet.eztv;
 
 import com.wexalian.jmagnet.Magnet;
-import com.wexalian.jmagnet.provider.IMagnetProvider;
-import com.wexalian.jmagnet.provider.SearchOptions;
+import com.wexalian.jmagnet.api.IMagnetProvider;
+import com.wexalian.jmagnet.api.SearchOptions;
 import com.wexalian.nullability.annotations.Nonnull;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class EZTVMagnetProvider implements IMagnetProvider {
     }
     
     @Override
-    public List<Magnet> searchAll() {
+    public List<Magnet> all() {
         return List.of();
     }
     

@@ -1,0 +1,4 @@
+com.wexalian.jmagnet.impl.magnet.eztv.EZTVMagnetProvider
+com.wexalian.jmagnet.impl.magnet.piratebay.TPBMagnetProvider
+
+com.wexalian.jmagnet.impl.magnet.temp.TempFileMagnetProvider

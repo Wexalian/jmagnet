@@ -1,9 +1,9 @@
-package com.wexalian.jmagnet.plugins.temp;
+package com.wexalian.jmagnet.impl.magnet.temp;
 
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.parser.MagnetParser;
-import com.wexalian.jmagnet.provider.IMagnetProvider;
-import com.wexalian.jmagnet.provider.SearchOptions;
+import com.wexalian.jmagnet.api.IMagnetProvider;
+import com.wexalian.jmagnet.api.SearchOptions;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,8 +20,8 @@ public class TempFileMagnetProvider implements IMagnetProvider {
     }
     
     @Override
-    public List<Magnet> searchAll() {
-        try (Stream<String> magnetLinks = Files.lines(MAGNETS_FILE).parallel()){
+    public List<Magnet> all() {
+        try (Stream<String> magnetLinks = Files.lines(MAGNETS_FILE).parallel()) {
             return magnetLinks.map(MagnetParser::parse).toList();
         }
         catch (IOException e) {
@@ -34,5 +34,10 @@ public class TempFileMagnetProvider implements IMagnetProvider {
     @Override
     public List<Magnet> search(SearchOptions options) {
         return List.of();
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

@@ -5,7 +5,7 @@ import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.Tracker;
 import com.wexalian.jmagnet.parser.MagnetParser;
-import com.wexalian.jmagnet.provider.IMagnetProvider;
+import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.tracker.GlobalTrackers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -134,7 +134,7 @@ public class MagnetParserTest {
         List<IMagnetProvider> providers = pluginLoader.loadPlugins(IMagnetProvider.class);
         
         for (IMagnetProvider provider : providers) {
-            for (Magnet magnet : provider.searchAll()) {
+            for (Magnet magnet : provider.all()) {
                 MagnetInfo info = magnet.getInfo();
                 String formattedName = info.getFormattedName();
                 
