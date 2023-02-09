@@ -29,7 +29,7 @@ public class TPBMagnetProvider implements IMagnetProvider {
     }
     
     @Override
-    public List<Magnet> all() {
+    public List<Magnet> recommended(int page) {
         return List.of();
     }
     

@@ -1,9 +1,9 @@
 package com.wexalian.jmagnet.impl.magnet.temp;
 
 import com.wexalian.jmagnet.Magnet;
-import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.parser.MagnetParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,18 +16,17 @@ public class TempFileMagnetProvider implements IMagnetProvider {
     
     @Override
     public String getName() {
-        return "Temp file";
+        return "Temp debug file";
     }
     
     @Override
-    public List<Magnet> all() {
+    public List<Magnet> recommended(int page) {
         try (Stream<String> magnetLinks = Files.lines(MAGNETS_FILE).parallel()) {
             return magnetLinks.map(MagnetParser::parse).toList();
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        
         return List.of();
     }
     
