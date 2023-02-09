@@ -1,13 +1,13 @@
 package com.wexalian.jmagnet.impl.magnet.piratebay;
 
 import com.google.gson.reflect.TypeToken;
-import com.wexalian.common.collection.util.MapUtil;
 import com.wexalian.common.gson.GsonUtil;
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
 import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.parser.MagnetParser;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -42,11 +42,11 @@ public class TPBMagnetProvider implements IMagnetProvider {
             int peers = torrent.getLeechers();
             int seeds = torrent.getSeeders();
             
-            MagnetMap magnetMap = new MagnetMap(MapUtil.newHashMap().fill(m -> {
-                m.put(Magnet.Parameter.EXACT_TOPIC, List.of("urn:btih:" + torrent.getInfoHash()));
-                m.put(Magnet.Parameter.DISPLAY_NAME, List.of(torrent.getName().replace(" ", "%20")));
-            }));
-            magnets.add(new Magnet(magnetMap, MagnetInfo.of(NAME, peers, seeds)));
+            MagnetMap magnetMap = MagnetMap.build(b -> {
+                b.addParameter(Magnet.Parameter.EXACT_TOPIC, "urn:btih:" + torrent.getInfoHash());
+                b.addParameter(Magnet.Parameter.DISPLAY_NAME, torrent.getName().replace(" ", "%20"));
+            });
+            magnets.add(MagnetParser.parse(magnetMap.createUri(), MagnetInfo.of(NAME, peers, seeds)));
         }
         return magnets;
     }
