@@ -6,6 +6,7 @@ import com.wexalian.nullability.annotations.Nonnull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public final class Magnet {
     private final MagnetMap map;
@@ -46,6 +47,19 @@ public final class Magnet {
     
     public List<String> getList(Parameter parameter) {
         return map.getList(parameter);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Magnet magnet = (Magnet) o;
+        return urn.equals(magnet.urn);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(urn);
     }
     
     @Nonnull
