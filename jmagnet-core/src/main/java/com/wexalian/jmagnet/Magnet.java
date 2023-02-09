@@ -54,31 +54,36 @@ public final class Magnet {
     }
     
     public enum Parameter {
-        EXACT_TOPIC("xt"),
-        DISPLAY_NAME("dn"),
-        TRACKERS("tr"),
-        EXACT_LENGTH("xl"),
-        WEB_SEED("ws"),
-        ACCEPTABLE_SOURCE("as"),
-        EXACT_SOURCE("xs"),
-        KEYWORD_TOPIC("kt"),
-        MANIFEST_TOPIC("mt"),
-        SELECT_ONLY("so");
+        EXACT_TOPIC("Exact Topic", "xt"),
+        DISPLAY_NAME("Display Name", "dn"),
+        TRACKERS("Trackers", "tr"),
+        EXACT_LENGTH("Exact Length", "xl"),
+        WEB_SEED("Web Seed", "ws"),
+        ACCEPTABLE_SOURCE("Acceptable Source", "as"),
+        EXACT_SOURCE("Exact Source", "xs"),
+        KEYWORD_TOPIC("Keyword Topic", "kt"),
+        MANIFEST_TOPIC("Manifest Topic", "mt"),
+        SELECT_ONLY("Select Only", "so");
         
-        private static final Map<String, Parameter> REVERSE_LOOKUP = MapUtil.newHashMap().values(values(), Parameter::getName);
+        private static final Map<String, Parameter> REVERSE_KEY_LOOKUP = MapUtil.newHashMap().values(values(), Parameter::getKey);
         
         private final String name;
+        private final String key;
         
-        Parameter(String name) {
+        Parameter(String name, String key) {
             this.name = name;
+            this.key = key;
         }
         
         public String getName() {
             return name;
         }
+        public String getKey() {
+            return key;
+        }
         
-        public static Parameter get(String name) {
-            return REVERSE_LOOKUP.get(name);
+        public static Parameter get(String key) {
+            return REVERSE_KEY_LOOKUP.get(key);
         }
     }
 }
