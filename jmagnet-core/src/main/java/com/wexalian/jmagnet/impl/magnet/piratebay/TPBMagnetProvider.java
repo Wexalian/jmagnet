@@ -26,13 +26,6 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
         setMaxLimit(-1); // ThePirateBay does not support page limiting
     }
     
-    
-    
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-    
     @Override
     public String getName() {
         return NAME;
