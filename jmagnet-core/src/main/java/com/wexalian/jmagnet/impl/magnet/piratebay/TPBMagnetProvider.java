@@ -60,66 +60,78 @@ public class TPBMagnetProvider implements IMagnetProvider {
                      .join();
     }
     
-    private static class TPBTorrent {
-        String id;
-        String name;
-        String info_hash;
-        String leechers;
-        String seeders;
-        String num_files;
-        String size;
-        String username;
-        String added;
-        String status;
-        String category;
-        String imdb;
+    protected static class TPBTorrent extends BasicTorrent {
+        private String id;
+        private String name;
+        private String info_hash;
+        private String leechers;
+        private String seeders;
+        private String num_files;
+        private String size;
+        private String username;
+        private String added;
+        private String status;
+        private String category;
+        private String imdb;
         
-        long getId() {
+        @Override
+        public long getId() {
             return Long.parseLong(id);
         }
         
-        String getName() {
-            return name;
+        @Override
+        public String getImdbId() {
+            return imdb;
         }
         
-        String getInfoHash() {
+        @Override
+        public String getHash() {
             return info_hash;
         }
         
-        int getLeechers() {
-            return Integer.parseInt(leechers);
+        @Override
+        public String getFilename() {
+            return URLEncoder.encode(name, StandardCharsets.UTF_8);
         }
         
-        int getSeeders() {
+        @Override
+        public String getTitle() {
+            return name;
+        }
+        
+        @Override
+        public int getSeeds() {
             return Integer.parseInt(seeders);
         }
         
-        int getNumFiles() {
-            return Integer.parseInt(num_files);
+        @Override
+        public int getPeers() {
+            return Integer.parseInt(leechers);
         }
         
-        long getSize() {
+        @Override
+        public long getSizeInBytes() {
             return Long.parseLong(size);
         }
         
-        String getUsername() {
+        public int getNumFiles() {
+            return Integer.parseInt(num_files);
+        }
+        
+        public String getUsername() {
             return username;
         }
         
-        long getAdded() {
+        public long getAdded() {
             return Long.parseLong(added);
         }
         
-        String getStatus() {
+        public String getStatus() {
             return status;
         }
         
-        int getCategory() {
+        public int getCategory() {
             return Integer.parseInt(category);
-        }
-        
-        String getImdb() {
-            return imdb;
         }
     }
 }

@@ -65,35 +65,7 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider {
         return magnets;
     }
     
-    private static final class EZTVApiResult {
-        private String imdb_id;
-        private int torrents_count;
-        private int limit;
-        private int page;
-        private List<EZTVTorrent> torrents;
-        
-        public String getImdbId() {
-            return imdb_id;
-        }
-        
-        public int getTorrentsCount() {
-            return torrents_count;
-        }
-        
-        public int getLimit() {
-            return limit;
-        }
-        
-        public int getPage() {
-            return page;
-        }
-        
-        public List<EZTVTorrent> getTorrents() {
-            return torrents;
-        }
-    }
-    
-    private static final class EZTVTorrent {
+    protected static final class EZTVTorrent extends BasicTorrent {
         private long id;
         private String hash;
         private String filename;
@@ -111,68 +83,79 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider {
         private long date_released_unix;
         private long size_bytes;
         
+        @Override
         public long getId() {
             return id;
         }
         
+        @Override
         public String getHash() {
             return hash;
         }
         
+        @Override
         public String getFilename() {
             return filename;
         }
         
-        public String getEpisodeUrl() {
-            return episode_url;
-        }
-        
-        public String getTorrentUrl() {
-            return torrent_url;
-        }
-        
-        public String getMagnetUrl() {
+        public String getMagnetUri() {
             return magnet_url;
         }
-        
+    
+        @Override
         public String getTitle() {
             return title;
         }
-        
+    
+        @Override
         public String getImdbId() {
             return imdb_id;
         }
-        
+    
+        @Override
         public int getSeason() {
             return season;
         }
-        
+    
+        @Override
         public int getEpisode() {
             return episode;
         }
-        
-        public String getSmallScreenshot() {
-            return small_screenshot;
-        }
-        
-        public String getLargeScreenshot() {
-            return large_screenshot;
-        }
-        
+    
+        @Override
         public int getSeeds() {
             return seeds;
         }
-        
+    
+        @Override
         public int getPeers() {
             return peers;
         }
-        
-        public long getDateReleasedUnix() {
+    
+        @Override
+        public long getReleaseDate() {
             return date_released_unix;
         }
-        
-        public long getSizeBytes() {
+    
+        @Override
+        public long getSizeInBytes() {
             return size_bytes;
+        }
+    
+        public String getEpisodeUrl() {
+            return episode_url;
+        }
+    
+        public String getTorrentUrl() {
+            return torrent_url;
+        }
+    
+        public String getSmallScreenshot() {
+            return small_screenshot;
+        }
+    
+        public String getLargeScreenshot() {
+            return large_screenshot;
         }
     }
 }
