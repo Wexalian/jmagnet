@@ -12,7 +12,7 @@ import java.util.ServiceLoader;
 public class MagnetProviderTest {
     
     public static final Path PATH = Path.of(System.getProperty("user.dir"), "..", "jmagnet-plugin-test/build/libs");
-    public static final SearchOptions SEARCH_OPTIONS = new SearchOptions("tt10234724", "moon_knight", -1, -1);
+    public static final SearchOptions SEARCH_OPTIONS = SearchOptions.paged("tt10234724", "moon_knight", -1, -1, -1, 10);
     
     private final PluginLoader pluginLoader = PluginLoader.init(PATH, ServiceLoader::load);
     

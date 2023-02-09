@@ -4,20 +4,22 @@ import com.google.gson.reflect.TypeToken;
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.impl.magnet.BasicTorrent;
 import com.wexalian.jmagnet.impl.magnet.HTTPMagnetProvider;
 import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.nullability.annotations.Nonnull;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.wexalian.jmagnet.impl.magnet.eztv.EZTVMagnetProvider.EZTVTorrent;
 
-public class EZTVMagnetProvider extends HTTPMagnetProvider {
-    public static final String NAME = "EZTV";
-    
-    public static final String BASE_URL = "https://eztv.re/api/get-torrents?imdb_id=";
+public class EZTVMagnetProvider extends HTTPMagnetProvider<EZTVTorrent> {
+    private static final String NAME = "EZTV";
+    private static final String BASE_URL = "https://eztv.re/api/get-torrents?imdb_id=";
+    private static final TypeToken<EZTVTorrent> TYPE_TOKEN = new TypeToken<>() {};
     
     public EZTVMagnetProvider() {
-        super(BASE_URL);
+        super(BASE_URL, SearchOptions.Keywords.Type.IMDB_ID, TYPE_TOKEN, result -> result.getAsJsonObject().getAsJsonArray("torrents"));
+        setPagination(true);
+        setMaxLimit(75);
     }
     
     @Nonnull
@@ -26,43 +28,14 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider {
     }
     
     @Override
-    public List<Magnet> recommended(int page) {
-        return List.of();
-    }
-    
-    @Override
-    public List<Magnet> search(SearchOptions options) {
-        List<Magnet> magnets = new ArrayList<>();
-        
-        int page = 1;
-        String[] query = new String[3];
-        query[0] = options.imdbId().replace("tt", "");
-        if (options.limit() > 0) query[1] = "limit=" + options.limit();
-        if (options.pages() > 0) query[2] = "page=" + page;
-        
-        EZTVApiResult result = getAndParse(query, new TypeToken<>() {});
-        
-        while (result.getTorrents() != null && result.getTorrents().size() > 0) {
-            for (EZTVTorrent torrent : result.getTorrents()) {
-                int peers = torrent.getPeers();
-                int seeds = torrent.getSeeds();
-                int season = torrent.getSeason();
-                int episode = torrent.getEpisode();
-                String title = torrent.getTitle();
-                
-                MagnetInfo info = MagnetInfo.builder(NAME, peers, seeds).setSeason(season).setEpisode(episode).setFormattedName(title).build();
-                Magnet magnet = MagnetParser.parse(torrent.getMagnetUrl(), info);
-                
-                magnets.add(magnet);
-            }
-            page++;
-            if (page > options.pages()) break;
-            
-            query[2] = "page=" + page;
-            result = getAndParse(query, new TypeToken<>() {});
-        }
-        
-        return magnets;
+    public Magnet parseTorrent(EZTVTorrent torrent) {
+        int peers = torrent.getPeers();
+        int seeds = torrent.getSeeds();
+        int season = torrent.getSeason();
+        int episode = torrent.getEpisode();
+        String title = torrent.getTitle();
+        MagnetInfo info = MagnetInfo.builder(getName(), peers, seeds).setSeason(season).setEpisode(episode).setFormattedName(title).build();
+        return MagnetParser.parse(torrent.getMagnetUri(), info);
     }
     
     protected static final class EZTVTorrent extends BasicTorrent {

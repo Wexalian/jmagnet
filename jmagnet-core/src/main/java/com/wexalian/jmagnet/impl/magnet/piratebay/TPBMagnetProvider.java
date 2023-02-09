@@ -1,27 +1,37 @@
 package com.wexalian.jmagnet.impl.magnet.piratebay;
 
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.wexalian.common.gson.GsonUtil;
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
-import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.impl.magnet.BasicTorrent;
+import com.wexalian.jmagnet.impl.magnet.HTTPMagnetProvider;
 import com.wexalian.jmagnet.parser.MagnetParser;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
-public class TPBMagnetProvider implements IMagnetProvider {
-    public static final String NAME = "ThePirateBay";
+import static com.wexalian.jmagnet.impl.magnet.piratebay.TPBMagnetProvider.TPBTorrent;
+
+public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
+    private static final String NAME = "ThePirateBay";
+    private static final String BASE_URL = "https://apibay.org/q.php?q=";
+    private static final TypeToken<TPBTorrent> TYPE_TOKEN = new TypeToken<>() {};
     
-    public static final String BASE_URL = "https://apibay.org/q.php?q=";
+    public TPBMagnetProvider() {
+        super(BASE_URL, SearchOptions.Keywords.Type.SLUG, TYPE_TOKEN, JsonElement::getAsJsonArray);
+        setPagination(false); // ThePirateBay does not support page limiting (currently...)
+        setMaxLimit(-1); // ThePirateBay does not support page limiting
+    }
     
-    private final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).followRedirects(HttpClient.Redirect.NORMAL).build();
+    
+    
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
     
     @Override
     public String getName() {
@@ -29,35 +39,15 @@ public class TPBMagnetProvider implements IMagnetProvider {
     }
     
     @Override
-    public List<Magnet> recommended(int page) {
-        return List.of();
-    }
-    
-    @Override
-    public List<Magnet> search(SearchOptions options) {
-        List<Magnet> magnets = new ArrayList<>();
-        List<TPBTorrent> torrents = getAndParse(BASE_URL + options.season(), new TypeToken<>() {});
+    protected Magnet parseTorrent(TPBTorrent torrent) {
+        int peers = torrent.getPeers();
+        int seeds = torrent.getSeeds();
         
-        for (TPBTorrent torrent : torrents) {
-            int peers = torrent.getLeechers();
-            int seeds = torrent.getSeeders();
-            
-            MagnetMap magnetMap = MagnetMap.build(b -> {
-                b.addParameter(Magnet.Parameter.EXACT_TOPIC, "urn:btih:" + torrent.getInfoHash());
-                b.addParameter(Magnet.Parameter.DISPLAY_NAME, torrent.getName().replace(" ", "%20"));
-            });
-            magnets.add(MagnetParser.parse(magnetMap.createUri(), MagnetInfo.of(NAME, peers, seeds)));
-        }
-        return magnets;
-    }
-    
-    public <T> T getAndParse(String url, TypeToken<T> typeToken) {
-        HttpRequest.Builder builder = HttpRequest.newBuilder().GET().uri(URI.create(url));
-        
-        return client.sendAsync(builder.build(), HttpResponse.BodyHandlers.ofString())
-                     .thenApply(HttpResponse::body)
-                     .thenApply(s -> GsonUtil.fromJsonString(s, typeToken))
-                     .join();
+        MagnetMap magnetMap = MagnetMap.build(b -> {
+            b.addParameter(Magnet.Parameter.EXACT_TOPIC, MAGNET_URI_SCHEME + torrent.getHash());
+            b.addParameter(Magnet.Parameter.DISPLAY_NAME, torrent.getFilename());
+        });
+        return MagnetParser.parse(magnetMap.createUri(), MagnetInfo.of(getName(), peers, seeds));
     }
     
     protected static class TPBTorrent extends BasicTorrent {

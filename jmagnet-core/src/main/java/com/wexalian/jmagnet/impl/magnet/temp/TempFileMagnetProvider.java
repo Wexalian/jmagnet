@@ -4,6 +4,7 @@ import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
 import com.wexalian.jmagnet.parser.MagnetParser;
+import com.wexalian.nullability.annotations.Nonnull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,6 +20,7 @@ public class TempFileMagnetProvider implements IMagnetProvider {
         return "Temp debug file";
     }
     
+    @Nonnull
     @Override
     public List<Magnet> recommended(int page) {
         try (Stream<String> magnetLinks = Files.lines(MAGNETS_FILE).parallel()) {
@@ -31,7 +33,7 @@ public class TempFileMagnetProvider implements IMagnetProvider {
     }
     
     @Override
-    public List<Magnet> search(SearchOptions options) {
+    public @Nonnull List<Magnet> search(SearchOptions options) {
         return List.of();
     }
     
