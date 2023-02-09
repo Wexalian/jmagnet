@@ -97,10 +97,10 @@ public class MagnetParserTest {
             Magnet.parse(magnetLink, MagnetInfo.of("test"));
         }
         
-        System.out.println("total unique trackers: " + GlobalTrackers.getGlobalTrackers().size());
+        System.out.println("total unique trackers: " + GlobalTrackers.getAllTrackers().size());
         System.out.println("total magnets parsed: " + MagnetParser.PARSED);
         
-        List<Tracker> trackers = new ArrayList<>(GlobalTrackers.getGlobalTrackers());
+        List<Tracker> trackers = new ArrayList<>(GlobalTrackers.getAllTrackers());
         trackers.sort(Comparator.comparing(Tracker::uri));
         for (Tracker tracker : trackers) {
             System.out.println(URLDecoder.decode(tracker.uri(), StandardCharsets.UTF_8));
@@ -134,7 +134,7 @@ public class MagnetParserTest {
         List<IMagnetProvider> providers = pluginLoader.loadPlugins(IMagnetProvider.class);
         
         for (IMagnetProvider provider : providers) {
-            for (Magnet magnet : provider.all()) {
+            for (Magnet magnet : provider.recommended(0)) {
                 MagnetInfo info = magnet.getInfo();
                 String formattedName = info.getFormattedName();
                 

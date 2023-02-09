@@ -1,26 +1,36 @@
 package com.wexalian.jmagnet.tracker;
 
 import com.wexalian.jmagnet.Tracker;
+import com.wexalian.jmagnet.api.ITrackerProvider;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class GlobalTrackers {
-    private static final Set<Tracker> GLOBAL_TRACKERS = new HashSet<>();
+    private static final Map<ITrackerProvider, List<Tracker>> PROVIDER_TRACKERS = new HashMap<>();
+    private static final List<Tracker> CUSTOM_TRACKERS = new ArrayList<>();
     
-    public static Set<Tracker> getGlobalTrackers() {
-        return Set.copyOf(GLOBAL_TRACKERS);
+    public static List<Tracker> getAllTrackers() {
+        List<Tracker> trackers = PROVIDER_TRACKERS.values().stream().flatMap(List::stream).collect(Collectors.toList());
+        trackers.addAll(CUSTOM_TRACKERS);
+        return trackers;
     }
     
-    public static void addTracker(Tracker tracker) {
-        GLOBAL_TRACKERS.add(tracker);
+    public static void onTrackersLoaded(ITrackerProvider provider, Collection<Tracker> trackers) {
+        PROVIDER_TRACKERS.computeIfAbsent(provider, p -> new ArrayList<>()).addAll(trackers);
     }
     
-    public static boolean hasTracker(Tracker tracker) {
-        return GLOBAL_TRACKERS.contains(tracker);
+    public static void onTrackersLoaded(Collection<Tracker> trackers) {
+        List<Tracker> allTrackers = getAllTrackers();
+        
+        for (Tracker tracker : trackers) {
+            if (!allTrackers.contains(tracker)) {
+                CUSTOM_TRACKERS.add(tracker);
+            }
+        }
     }
     
-    public static boolean hasTracker(String tracker) {
-        return GLOBAL_TRACKERS.stream().map(Tracker::uri).anyMatch(tracker::equals);
+    public static void onTrackerUrisLoaded(Collection<String> trackers) {
+        onTrackersLoaded(trackers.stream().map(Tracker::new).toList());
     }
 }

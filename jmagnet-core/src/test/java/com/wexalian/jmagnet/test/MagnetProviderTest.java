@@ -21,7 +21,7 @@ public class MagnetProviderTest {
         List<IMagnetProvider> providers = pluginLoader.loadPlugins(IMagnetProvider.class);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
-            long count = provider.all().size();
+            long count = provider.recommended(0).size();
             long time = System.currentTimeMillis() - start;
             
             System.out.println("Provider '" + provider.getName() + "' has loaded " + count + " magnets in " + time + " ms");

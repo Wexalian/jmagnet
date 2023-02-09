@@ -4,7 +4,6 @@ import com.wexalian.common.util.StringUtil;
 import com.wexalian.jmagnet.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
-import com.wexalian.jmagnet.Tracker;
 import com.wexalian.jmagnet.tracker.GlobalTrackers;
 import com.wexalian.nullability.annotations.Nonnull;
 
@@ -36,27 +35,19 @@ public class MagnetParser {
         PARSED++;
         
         if (!info.isSeason() || !info.isEpisode() || StringUtil.isBlank(info.getFormattedName())) {
-            String displayName = map.get(Magnet.Parameter.DISPLAY_NAME);
+            MagnetInfo.Builder builder = MagnetInfo.builder(info);
             
+            String displayName = map.get(Magnet.Parameter.DISPLAY_NAME);
             NameParseResult result = parseName(displayName);
-            if (result.isSeason) info.setSeason(result.season);
-            if (result.isEpisode) info.setEpisode(result.episode);
-            info.setFormattedName(result.formattedName);
+            if (result.isSeason) builder.setSeason(result.season);
+            if (result.isEpisode) builder.setEpisode(result.episode);
+            builder.setFormattedName(result.formattedName);
+            
+            info = builder.build();
         }
         
         List<String> trackerUris = map.getList(Magnet.Parameter.TRACKERS);
-        // int unique = 0;
-        for (String tracker : trackerUris) {
-            if (!GlobalTrackers.hasTracker(tracker)) {
-                // unique++;
-                GlobalTrackers.addTracker(new Tracker(tracker));
-            }
-        }
-        
-        // if (unique > 0) {
-        //     System.out.println("magnet " + PARSED + " contains " + trackerUris.size() + " trackers, " + unique + " unique");
-        // }
-        // else System.out.println("magnet " + PARSED + " contains " + trackerUris.size() + " trackers");
+        GlobalTrackers.onTrackerUrisLoaded(trackerUris);
         
         return new Magnet(map, info);
     }

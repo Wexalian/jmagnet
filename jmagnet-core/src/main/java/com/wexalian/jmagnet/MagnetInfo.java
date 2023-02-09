@@ -6,15 +6,15 @@ public class MagnetInfo {
     private final int peers;
     private final int seeds;
     
-    private boolean isSeason;
-    private boolean isEpisode;
+    private final boolean isSeason;
+    private final boolean isEpisode;
     
-    private int season;
-    private int episode;
+    private final int season;
+    private final int episode;
     
-    private String formattedName;
+    private final String formattedName;
     
-    private MagnetInfo(String provider, int peers, int seeds, boolean isSeason, boolean isEpisode, int season, int episode, String formattedName) {
+    MagnetInfo(String provider, int peers, int seeds, boolean isSeason, boolean isEpisode, int season, int episode, String formattedName) {
         this.provider = provider;
         this.peers = peers;
         this.seeds = seeds;
@@ -22,6 +22,7 @@ public class MagnetInfo {
         this.isEpisode = isEpisode;
         this.season = season;
         this.episode = episode;
+        this.formattedName = formattedName;
     }
     
     public String getProvider() {
@@ -40,52 +41,56 @@ public class MagnetInfo {
         return isSeason;
     }
     
-    public boolean isEpisode() {
-        return isEpisode;
-    }
-    
     public int getSeason() {
         return season;
     }
     
-    public void setSeason(int season) {
-        this.season = season;
-        this.isSeason = true;
-        this.isEpisode = false;
+    public boolean isEpisode() {
+        return isEpisode;
     }
     
     public int getEpisode() {
         return episode;
     }
     
-    public void setEpisode(int episode) {
-        this.episode = episode;
-        this.isEpisode = true;
-        this.isSeason = false;
-    }
-    
     public String getFormattedName() {
         return formattedName;
     }
     
-    public void setFormattedName(String formattedName) {
-        this.formattedName = formattedName;
-    }
-    
     public static MagnetInfo of(String provider) {
-        return new MagnetInfo(provider, -1, -1, false, false, -1, -1, "");
+        return builder(provider).build();
     }
     
     public static MagnetInfo of(String provider, int peers, int seeds) {
-        return new MagnetInfo(provider, peers, seeds, false, false, -1, -1, "");
+        return builder(provider, peers, seeds).build();
     }
     
     public static MagnetInfo of(String provider, int peers, int seeds, int season) {
-        return new MagnetInfo(provider, peers, seeds, true, false, season, -1, "");
+        return builder(provider, peers, seeds, season).build();
     }
     
     public static MagnetInfo of(String provider, int peers, int seeds, int season, int episode) {
-        return new MagnetInfo(provider, peers, seeds, true, false, season, episode, "");
+        return builder(provider, peers, seeds, season, episode).build();
+    }
+    
+    public static Builder builder(String provider) {
+        return new Builder(provider, -1, -1).setSeason(-1).setEpisode(-1).setFormattedName("");
+    }
+    
+    public static Builder builder(String provider, int peers, int seeds) {
+        return new Builder(provider, peers, seeds).setSeason(-1).setEpisode(-1).setFormattedName("");
+    }
+    
+    public static Builder builder(String provider, int peers, int seeds, int season) {
+        return new Builder(provider, peers, seeds).setSeason(season).setEpisode(-1).setFormattedName("");
+    }
+    
+    public static Builder builder(String provider, int peers, int seeds, int season, int episode) {
+        return new Builder(provider, peers, seeds).setSeason(season).setEpisode(episode).setFormattedName("");
+    }
+    
+    public static Builder builder(MagnetInfo info) {
+        return builder(info.provider, info.peers, info.seeds, info.season, info.episode).setFormattedName(info.formattedName);
     }
     
     public enum Resolution {
@@ -117,6 +122,46 @@ public class MagnetInfo {
         
         public int getHeight() {
             return height;
+        }
+    }
+    
+    public static class Builder {
+        private final String provider;
+        private final int peers;
+        private final int seeds;
+        private boolean isSeason;
+        private boolean isEpisode;
+        private int season;
+        private int episode;
+        private String formattedName;
+        
+        private Builder(String provider, int peers, int seeds) {
+            this.provider = provider;
+            this.peers = peers;
+            this.seeds = seeds;
+        }
+        
+        public Builder setSeason(int season) {
+            this.season = season;
+            this.isSeason = true;
+            this.isEpisode = false;
+            return this;
+        }
+        
+        public Builder setEpisode(int episode) {
+            this.episode = episode;
+            this.isSeason = false;
+            this.isEpisode = true;
+            return this;
+        }
+        
+        public Builder setFormattedName(String formattedName) {
+            this.formattedName = formattedName;
+            return this;
+        }
+        
+        public MagnetInfo build() {
+            return new MagnetInfo(provider, peers, seeds, isSeason, isEpisode, season, episode, formattedName);
         }
     }
 }
