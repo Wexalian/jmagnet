@@ -15,7 +15,6 @@ module com.wexalian.jmagnet {
     
     exports com.wexalian.jmagnet;
     exports com.wexalian.jmagnet.api;
-    exports com.wexalian.jmagnet._temp;
     exports com.wexalian.jmagnet.parser;
     exports com.wexalian.jmagnet.tracker;
     
