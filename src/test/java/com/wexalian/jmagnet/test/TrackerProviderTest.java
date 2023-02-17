@@ -1,7 +1,7 @@
 package com.wexalian.jmagnet.test;
 
 import com.wexalian.common.plugin.PluginLoader;
-import com.wexalian.jmagnet.Tracker;
+import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.api.ITrackerProvider;
 import com.wexalian.jmagnet.tracker.TrackerCache;
 import org.junit.jupiter.api.AfterAll;

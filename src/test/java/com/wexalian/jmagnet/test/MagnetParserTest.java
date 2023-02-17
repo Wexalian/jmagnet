@@ -1,9 +1,9 @@
 package com.wexalian.jmagnet.test;
 
 import com.wexalian.common.plugin.PluginLoader;
-import com.wexalian.jmagnet.Magnet;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
-import com.wexalian.jmagnet.Tracker;
+import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.tracker.TrackerCache;

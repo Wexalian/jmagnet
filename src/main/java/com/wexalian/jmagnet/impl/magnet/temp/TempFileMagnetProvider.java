@@ -1,6 +1,6 @@
 package com.wexalian.jmagnet.impl.magnet.temp;
 
-import com.wexalian.jmagnet.Magnet;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
 import com.wexalian.jmagnet.parser.MagnetParser;

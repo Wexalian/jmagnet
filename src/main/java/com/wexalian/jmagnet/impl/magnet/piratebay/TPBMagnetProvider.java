@@ -2,7 +2,7 @@ package com.wexalian.jmagnet.impl.magnet.piratebay;
 
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.wexalian.jmagnet.Magnet;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
 import com.wexalian.jmagnet.api.SearchOptions;

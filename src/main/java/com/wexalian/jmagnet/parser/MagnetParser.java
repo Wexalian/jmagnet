@@ -1,7 +1,7 @@
 package com.wexalian.jmagnet.parser;
 
 import com.wexalian.common.util.StringUtil;
-import com.wexalian.jmagnet.Magnet;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
 import com.wexalian.nullability.annotations.Nonnull;

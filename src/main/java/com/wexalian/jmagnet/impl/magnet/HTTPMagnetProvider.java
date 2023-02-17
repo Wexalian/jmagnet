@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.wexalian.common.collection.pair.Pair;
 import com.wexalian.common.gson.GsonUtil;
 import com.wexalian.common.util.StringUtil;
-import com.wexalian.jmagnet.Magnet;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
 import com.wexalian.nullability.annotations.Nonnull;

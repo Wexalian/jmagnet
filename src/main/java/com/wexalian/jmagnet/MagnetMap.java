@@ -1,6 +1,7 @@
 package com.wexalian.jmagnet;
 
 import com.wexalian.common.collection.wrapper.ListWrapper;
+import com.wexalian.jmagnet.api.Magnet;
 
 import java.util.ArrayList;
 import java.util.HashMap;

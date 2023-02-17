@@ -1,6 +1,8 @@
-package com.wexalian.jmagnet;
+package com.wexalian.jmagnet.api;
 
 import com.wexalian.common.collection.util.MapUtil;
+import com.wexalian.jmagnet.MagnetInfo;
+import com.wexalian.jmagnet.MagnetMap;
 import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.jmagnet.tracker.TrackerCache;
 import com.wexalian.nullability.annotations.Nonnull;

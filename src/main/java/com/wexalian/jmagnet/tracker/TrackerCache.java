@@ -1,8 +1,8 @@
 package com.wexalian.jmagnet.tracker;
 
 import com.wexalian.common.collection.util.ListUtilNew;
-import com.wexalian.jmagnet.Magnet;
-import com.wexalian.jmagnet.Tracker;
+import com.wexalian.jmagnet.api.Magnet;
+import com.wexalian.jmagnet.api.Tracker;
 
 import java.io.IOException;
 import java.nio.file.Files;
