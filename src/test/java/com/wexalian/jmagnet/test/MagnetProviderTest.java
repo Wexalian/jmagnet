@@ -1,8 +1,8 @@
 package com.wexalian.jmagnet.test;
 
 import com.wexalian.common.plugin.PluginLoader;
-import com.wexalian.jmagnet.api.provider.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.api.provider.IMagnetProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class MagnetProviderTest {
     
     @Test
     void testLoadProvidersSearchAll() {
-        Iterable<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class);
+        PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
             long count = provider.recommended(0).size();
@@ -34,7 +34,7 @@ public class MagnetProviderTest {
     
     @Test
     void testLoadProvidersSearchOption() {
-        Iterable<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class);
+        PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
             long count = provider.search(SEARCH_OPTIONS).size();
