@@ -1,5 +1,5 @@
-import com.wexalian.jmagnet.api.IMagnetProvider;
-import com.wexalian.jmagnet.api.ITrackerProvider;
+import com.wexalian.jmagnet.api.provider.IMagnetProvider;
+import com.wexalian.jmagnet.api.provider.ITrackerProvider;
 import com.wexalian.jmagnet.impl.magnet.eztv.EZTVMagnetProvider;
 import com.wexalian.jmagnet.impl.magnet.piratebay.TPBMagnetProvider;
 import com.wexalian.jmagnet.impl.magnet.temp.TempFileMagnetProvider;
@@ -20,6 +20,7 @@ module com.wexalian.jmagnet {
     
     opens com.wexalian.jmagnet.impl.magnet.piratebay to com.google.gson;
     opens com.wexalian.jmagnet.impl.magnet.eztv to com.google.gson;
+    exports com.wexalian.jmagnet.api.provider;
     
     uses IMagnetProvider;
     uses ITrackerProvider;

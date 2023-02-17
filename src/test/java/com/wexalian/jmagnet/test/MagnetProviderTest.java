@@ -1,7 +1,7 @@
 package com.wexalian.jmagnet.test;
 
 import com.wexalian.common.plugin.PluginLoader;
-import com.wexalian.jmagnet.api.IMagnetProvider;
+import com.wexalian.jmagnet.api.provider.IMagnetProvider;
 import com.wexalian.jmagnet.api.SearchOptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

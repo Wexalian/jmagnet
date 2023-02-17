@@ -5,7 +5,7 @@ import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.parser.MagnetParser;
-import com.wexalian.jmagnet.api.IMagnetProvider;
+import com.wexalian.jmagnet.api.provider.IMagnetProvider;
 import com.wexalian.jmagnet.tracker.TrackerCache;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

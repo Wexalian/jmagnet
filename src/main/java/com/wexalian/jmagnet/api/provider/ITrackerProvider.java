@@ -1,6 +1,7 @@
-package com.wexalian.jmagnet.api;
+package com.wexalian.jmagnet.api.provider;
 
 import com.wexalian.common.plugin.IAbstractPlugin;
+import com.wexalian.jmagnet.api.Tracker;
 
 import java.util.List;
 

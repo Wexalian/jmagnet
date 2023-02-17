@@ -1,7 +1,7 @@
 package com.wexalian.jmagnet.impl.tracker;
 
 import com.wexalian.jmagnet.api.Tracker;
-import com.wexalian.jmagnet.api.ITrackerProvider;
+import com.wexalian.jmagnet.api.provider.ITrackerProvider;
 import com.wexalian.jmagnet.tracker.TrackerCache;
 import com.wexalian.nullability.annotations.Nonnull;
 

@@ -1,5 +1,5 @@
-import com.wexalian.jmagnet.api.IMagnetProvider;
-import com.wexalian.jmagnet.api.ITrackerProvider;
+import com.wexalian.jmagnet.api.provider.IMagnetProvider;
+import com.wexalian.jmagnet.api.provider.ITrackerProvider;
 
 module com.wexalian.jmagnet.test {
     requires com.wexalian.common;
