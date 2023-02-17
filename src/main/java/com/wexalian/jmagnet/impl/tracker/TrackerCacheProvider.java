@@ -1,0 +1,32 @@
+package com.wexalian.jmagnet.impl.tracker;
+
+import com.wexalian.jmagnet.Tracker;
+import com.wexalian.jmagnet.api.ITrackerProvider;
+import com.wexalian.jmagnet.tracker.TrackerCache;
+import com.wexalian.nullability.annotations.Nonnull;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class TrackerCacheProvider implements ITrackerProvider {
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tracker Cache";
+    }
+    
+    @Override
+    public List<Tracker> load() {
+        if (Files.exists(TrackerCache.FILE_PATH)) {
+            try (Stream<String> lines = Files.lines(TrackerCache.FILE_PATH)) {
+                return lines.map(Tracker::new).toList();
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Error loading tracker cache: ", e);
+            }
+        }
+        return List.of();
+    }
+}
