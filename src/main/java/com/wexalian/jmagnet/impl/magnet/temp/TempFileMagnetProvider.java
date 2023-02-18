@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class TempFileMagnetProvider implements IMagnetProvider {
-    private static final Path MAGNETS_FILE = Path.of(System.getProperty("user.dir"), "..", "magnets", "magnets.txt");
+    private static final Path MAGNETS_FILE = Path.of(System.getProperty("user.dir"), "magnets", "magnets.txt");
     
     @Override
     public String getName() {

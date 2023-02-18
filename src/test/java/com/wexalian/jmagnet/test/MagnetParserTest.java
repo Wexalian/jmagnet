@@ -28,11 +28,11 @@ public class MagnetParserTest extends BaseTest{
     
     @Test
     void testParseMagnets() {
-        for (String magnetLink : TEST_MAGNET_LINKS) {
+        for (String magnetLink : LIST_MAGNET_LINKS_LARS) {
             Magnet.parse(magnetLink, MagnetInfo.of("test"));
         }
         
-        for (String magnetLink : COLINS_TEST_MAGNETS) {
+        for (String magnetLink : LIST_MAGNET_LINKS_COLIN) {
             Magnet.parse(magnetLink, MagnetInfo.of("test"));
         }
         
@@ -64,9 +64,9 @@ public class MagnetParserTest extends BaseTest{
         
         testParseNames(seasons, episodes, unknown);
         
-        write(MAGNET_NAMES_FILE_SEASONS, seasons);
-        write(MAGNET_NAMES_FILE_EPISODES, episodes);
-        write(MAGNET_NAMES_FILE_UNKNOWN, unknown);
+        write(FILE_MAGNET_NAMES_SEASONS, seasons);
+        write(FILE_MAGNET_NAMES_EPISODES, episodes);
+        write(FILE_MAGNET_NAMES_UNKNOWN, unknown);
     }
     
     private static void testParseNames(List<String> seasons, List<String> episodes, List<String> unknown) {

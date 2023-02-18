@@ -28,7 +28,7 @@ public class MagnetParser {
     public static int PARSED = 0;
     
     @Nonnull
-    public static Magnet parse(String magnetLink, MagnetInfo info) {
+    public static Magnet parse(@Nonnull String magnetLink, @Nonnull MagnetInfo info) {
         MagnetMap map = decodeMagnetLink(magnetLink);
         
         PARSED++;
@@ -37,7 +37,7 @@ public class MagnetParser {
             MagnetInfo.Builder builder = MagnetInfo.builder(info);
             
             String displayName = map.get(Magnet.Parameter.DISPLAY_NAME);
-            NameParseResult result = parseName(displayName);
+            NameParseResult result = parseDisplayName(displayName);
             if (result.isSeason) builder.setSeason(result.season);
             if (result.isEpisode) builder.setEpisode(result.episode);
             builder.setFormattedName(result.formattedName);
@@ -46,6 +46,11 @@ public class MagnetParser {
         }
     
         return new Magnet(map, info);
+    }
+    
+    @Nonnull
+    public static NameParseResult parseName(@Nonnull String magnetLink) {
+        return parseDisplayName(decodeMagnetLink(magnetLink).get(Magnet.Parameter.DISPLAY_NAME));
     }
     
     private static MagnetMap decodeMagnetLink(String magnetLink) {
@@ -60,7 +65,7 @@ public class MagnetParser {
         return new MagnetMap(map);
     }
     
-    public static NameParseResult parseName(String name) {
+    private static NameParseResult parseDisplayName(String name) {
         name = name.replaceAll("%20", " ");
         for (Pattern pattern : EPISODE_PATTERNS) {
             Matcher matcher = pattern.matcher(name.toLowerCase());
