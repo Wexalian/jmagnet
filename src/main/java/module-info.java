@@ -10,20 +10,16 @@ module com.wexalian.jmagnet {
     requires com.wexalian.nullability;
     
     requires com.google.gson;
-    
     requires java.net.http;
     
     exports com.wexalian.jmagnet;
     exports com.wexalian.jmagnet.api;
+    exports com.wexalian.jmagnet.api.provider;
     exports com.wexalian.jmagnet.parser;
     exports com.wexalian.jmagnet.tracker;
     
     opens com.wexalian.jmagnet.impl.magnet.piratebay to com.google.gson;
     opens com.wexalian.jmagnet.impl.magnet.eztv to com.google.gson;
-    exports com.wexalian.jmagnet.api.provider;
-    
-    uses IMagnetProvider;
-    uses ITrackerProvider;
     
     provides IMagnetProvider with TPBMagnetProvider, EZTVMagnetProvider, TempFileMagnetProvider;
     provides ITrackerProvider with TrackerCacheProvider;
