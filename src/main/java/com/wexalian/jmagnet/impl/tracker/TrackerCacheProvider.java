@@ -19,8 +19,8 @@ public class TrackerCacheProvider implements ITrackerProvider {
     
     @Override
     public List<Tracker> load() {
-        if (Files.exists(TrackerCache.FILE_PATH)) {
-            try (Stream<String> lines = Files.lines(TrackerCache.FILE_PATH)) {
+        if (Files.exists(TrackerCache.DEFAULT_TRACKER_CACHE_PATH)) {
+            try (Stream<String> lines = Files.lines(TrackerCache.DEFAULT_TRACKER_CACHE_PATH)) {
                 return lines.map(Tracker::new).toList();
             }
             catch (IOException e) {
