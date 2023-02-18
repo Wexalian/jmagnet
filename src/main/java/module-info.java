@@ -8,9 +8,13 @@ import com.wexalian.jmagnet.impl.tracker.TrackerCacheProvider;
 module com.wexalian.jmagnet {
     requires com.wexalian.common;
     requires com.wexalian.nullability;
-    
     requires com.google.gson;
+    
     requires java.net.http;
+    
+    requires org.fusesource.jansi;
+    requires org.apache.logging.log4j;
+    requires org.apache.logging.log4j.core;
     
     exports com.wexalian.jmagnet;
     exports com.wexalian.jmagnet.api;
