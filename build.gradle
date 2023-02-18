@@ -39,6 +39,8 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 
+    modularity.inferModulePath = false
+
     withSourcesJar()
     withJavadocJar()
 }
