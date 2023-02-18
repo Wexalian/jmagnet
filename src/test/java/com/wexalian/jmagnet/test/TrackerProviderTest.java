@@ -3,24 +3,11 @@ package com.wexalian.jmagnet.test;
 import com.wexalian.common.plugin.PluginLoader;
 import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.api.provider.ITrackerProvider;
-import com.wexalian.jmagnet.tracker.TrackerCache;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.util.List;
-import java.util.ServiceLoader;
 
-public class TrackerProviderTest {
-    
-    public static final Path PATH = Path.of(System.getProperty("user.dir"), "..", "jmagnet-plugin-test/build/libs");
-    
-    @BeforeAll
-    static void init() {
-        PluginLoader.init(ServiceLoader::load);
-        PluginLoader.loadPlugins(PATH);
-    }
+public class TrackerProviderTest extends BaseTest{
     @Test
     void testLoadTrackers() {
         Iterable<ITrackerProvider> providers = PluginLoader.load(ITrackerProvider.class);
@@ -33,10 +20,5 @@ public class TrackerProviderTest {
             
             trackers.forEach(System.out::println);
         }
-    }
-    
-    @AfterAll
-    static void shutdown() {
-        TrackerCache.save();
     }
 }
