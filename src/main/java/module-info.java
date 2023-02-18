@@ -21,6 +21,9 @@ module com.wexalian.jmagnet {
     opens com.wexalian.jmagnet.impl.magnet.piratebay to com.google.gson;
     opens com.wexalian.jmagnet.impl.magnet.eztv to com.google.gson;
     
+    uses IMagnetProvider;
+    uses ITrackerProvider;
+    
     provides IMagnetProvider with TPBMagnetProvider, EZTVMagnetProvider, TempFileMagnetProvider;
     provides ITrackerProvider with TrackerCacheProvider;
 }
