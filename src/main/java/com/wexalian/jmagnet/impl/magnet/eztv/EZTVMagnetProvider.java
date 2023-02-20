@@ -3,7 +3,7 @@ package com.wexalian.jmagnet.impl.magnet.eztv;
 import com.google.gson.reflect.TypeToken;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
-import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.api.provider.SearchOptions;
 import com.wexalian.jmagnet.impl.magnet.BasicTorrent;
 import com.wexalian.jmagnet.impl.magnet.HTTPMagnetProvider;
 import com.wexalian.jmagnet.parser.MagnetParser;

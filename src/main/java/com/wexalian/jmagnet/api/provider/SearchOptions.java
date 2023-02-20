@@ -1,4 +1,4 @@
-package com.wexalian.jmagnet.api;
+package com.wexalian.jmagnet.api.provider;
 
 import java.util.function.Function;
 

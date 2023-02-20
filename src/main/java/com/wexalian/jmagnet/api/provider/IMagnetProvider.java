@@ -2,7 +2,6 @@ package com.wexalian.jmagnet.api.provider;
 
 import com.wexalian.common.plugin.IAbstractPlugin;
 import com.wexalian.jmagnet.api.Magnet;
-import com.wexalian.jmagnet.api.SearchOptions;
 import com.wexalian.nullability.annotations.Nonnull;
 
 import java.util.List;

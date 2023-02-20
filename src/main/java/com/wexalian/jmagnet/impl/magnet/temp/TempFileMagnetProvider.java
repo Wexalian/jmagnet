@@ -2,7 +2,7 @@ package com.wexalian.jmagnet.impl.magnet.temp;
 
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.provider.IMagnetProvider;
-import com.wexalian.jmagnet.api.SearchOptions;
+import com.wexalian.jmagnet.api.provider.SearchOptions;
 import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.nullability.annotations.Nonnull;
 
