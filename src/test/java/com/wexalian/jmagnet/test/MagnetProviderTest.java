@@ -11,7 +11,7 @@ public class MagnetProviderTest/* extends BaseTest*/{
     public static final SearchOptions SEARCH_OPTIONS = SearchOptions.paged("tt10234724", "moon_knight", -1, -1, -1, 10);
     
     @Test
-    void testLoadProvidersSearchAll() {
+    void testLoadProvidersRecommended() {
         PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class, ServiceLoader::load);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
