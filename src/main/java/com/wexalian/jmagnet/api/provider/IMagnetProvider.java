@@ -10,6 +10,11 @@ public interface IMagnetProvider extends IAbstractPlugin {
     String MAGNET_URI_SCHEME = "urn:btih:";
     
     @Nonnull
+    default List<Magnet> popular(int page) {
+        return List.of();
+    }
+    
+    @Nonnull
     default List<Magnet> recommended(int page) {
         return List.of();
     }
