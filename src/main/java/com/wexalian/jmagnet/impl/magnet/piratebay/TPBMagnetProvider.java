@@ -1,29 +1,37 @@
 package com.wexalian.jmagnet.impl.magnet.piratebay;
 
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.wexalian.jmagnet.api.Magnet;
-import com.wexalian.jmagnet.MagnetInfo;
+import com.wexalian.common.collection.util.MapUtil;
 import com.wexalian.jmagnet.MagnetMap;
-import com.wexalian.jmagnet.api.provider.SearchOptions;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.impl.magnet.BasicTorrent;
 import com.wexalian.jmagnet.impl.magnet.HTTPMagnetProvider;
 import com.wexalian.jmagnet.parser.MagnetParser;
+import com.wexalian.nullability.annotations.Nonnull;
+import com.wexalian.nullability.annotations.Nullable;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import static com.wexalian.jmagnet.MagnetInfo.Category;
+import static com.wexalian.jmagnet.MagnetInfo.of;
 import static com.wexalian.jmagnet.impl.magnet.piratebay.TPBMagnetProvider.TPBTorrent;
 
 public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
     private static final String NAME = "ThePirateBay";
-    private static final String BASE_URL = "https://apibay.org/q.php?q=";
+    private static final String BASE_URL = "https://apibay.org/";
+    private static final String DATA_TOP_100 = "data_top100_";
     private static final TypeToken<TPBTorrent> TYPE_TOKEN = new TypeToken<>() {};
     
+    private static final Set<Category> SUPPORTED = Set.of(TBPCategory.values());
+    
     public TPBMagnetProvider() {
-        super(BASE_URL, SearchOptions.Keywords.Type.SLUG, TYPE_TOKEN, JsonElement::getAsJsonArray);
-        setPagination(false); // ThePirateBay does not support page limiting (currently...)
-        setMaxLimit(-1); // ThePirateBay does not support page limiting
+        super(BASE_URL, TYPE_TOKEN);
+        setPagination(false); // ThePirateBay does not support page limiting
+        setMaxLimit(-1);      //
     }
     
     @Override
@@ -31,6 +39,46 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
         return NAME;
     }
     
+    @Nonnull
+    @Override
+    public Set<Category> supported() {
+        return SUPPORTED;
+    }
+    
+    @Nonnull
+    @Override
+    public List<Magnet> recent(Category category, int page, int limit) {
+        String file = DATA_TOP_100 + "recent";
+        if (page > 1) file += "_" + (page - 1);
+        return get(category, "precompiled/" + file + ".json");
+    }
+    
+    @Nonnull
+    @Override
+    public List<Magnet> popular(Category category, int page, int limit) {
+        int id = TBPCategory.wrap(category).id();
+        String file = DATA_TOP_100 + (id < 0 ? "all" : id);
+        return get(category, "precompiled/" + file + ".json");
+    }
+    
+    // @Nonnull
+    // @Override
+    // public List<Magnet> search(Category category, String query, int page, int limit) {
+    //     return super.search(category, query, page, limit);
+    // }
+    //
+    // @Nonnull
+    // @Override
+    // public List<Magnet> show(String imdbId, String slug, int page, int limit) {
+    //     return super.show(imdbId, slug, page, limit);
+    // }
+    
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+    
+    @Nullable
     @Override
     protected Magnet parseTorrent(TPBTorrent torrent) {
         int peers = torrent.getPeers();
@@ -40,7 +88,139 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
             b.addParameter(Magnet.Parameter.EXACT_TOPIC, MAGNET_URI_SCHEME + torrent.getHash());
             b.addParameter(Magnet.Parameter.DISPLAY_NAME, torrent.getFilename());
         });
-        return MagnetParser.parse(magnetMap.createUri(), MagnetInfo.of(getName(), peers, seeds));
+        return MagnetParser.parse(magnetMap.createUri(), of(getName(), torrent.getCategory(), peers, seeds));
+    }
+    
+    public enum TBPCategory implements Category {
+        ALL(Common.ALL, -1),
+        UNKNOWN(Common.OTHER, -1),
+        
+        AUDIO(Common.AUDIO, 100),
+        AUDIO_MUSIC(Common.MUSIC, AUDIO),
+        AUDIO_BOOKS(AUDIO),
+        AUDIO_SOUND_CLIPS(AUDIO),
+        AUDIO_FLAC(AUDIO),
+        AUDIO_OTHER(AUDIO, 199),
+        
+        VIDEO(Common.VIDEO, 200),
+        VIDEO_MOVIES(Common.MOVIES, VIDEO),
+        VIDEO_MOVIES_DVDR(Common.MOVIES, VIDEO),
+        VIDEO_MUSIC_VIDEOS(VIDEO),
+        VIDEO_MOVIE_CLIPS(VIDEO),
+        VIDEO_TV_SHOWS(Common.TV_SHOWS, VIDEO),
+        VIDEO_HANDHELD(VIDEO),
+        VIDEO_HD_MOVIES(Common.MOVIES, VIDEO),
+        VIDEO_HD_TV_SHOWS(Common.TV_SHOWS, VIDEO),
+        VIDEO_3D(VIDEO),
+        VIDEO_OTHER(VIDEO, 299),
+        
+        APPLICATIONS(Common.APPLICATIONS, 300),
+        APPLICATIONS_WINDOWS(APPLICATIONS),
+        APPLICATIONS_MAC(APPLICATIONS),
+        APPLICATIONS_UNIX(APPLICATIONS),
+        APPLICATIONS_HANDHELD(APPLICATIONS),
+        APPLICATIONS_IOS(APPLICATIONS),
+        APPLICATIONS_ANDROID(APPLICATIONS),
+        APPLICATIONS_OTHER_OS(APPLICATIONS, 399),
+        
+        GAMES(Common.GAMES, 400),
+        GAMES_PC(GAMES),
+        GAMES_MAC(GAMES),
+        GAMES_PSX(GAMES),
+        GAMES_XBOX_360(GAMES),
+        GAMES_WII(GAMES),
+        GAMES_HANDHELD(GAMES),
+        GAMES_IOS(GAMES),
+        GAMES_ANDROID(GAMES),
+        GAMES_OTHER(GAMES, 499),
+        
+        PORN(Common.PORN, 500),
+        PORN_MOVIES(PORN),
+        PORN_MOVIES_DVDR(PORN),
+        PORN_PICTURES(PORN),
+        PORN_GAMES(PORN),
+        PORN_HD_MOVIES(PORN),
+        PORN_MOVIE_CLIPS(PORN),
+        PORN_OTHER(PORN, 599),
+        
+        OTHER(Common.OTHER, 600),
+        OTHER_EBOOKS(OTHER),
+        OTHER_COMICS(OTHER),
+        OTHER_PICTURES(OTHER),
+        OTHER_COVERS(OTHER),
+        OTHER_PHYSIBLES(OTHER),
+        OTHER_OTHER(OTHER, 699);
+        
+        private static final Map<Integer, TBPCategory> REVERSE_LOOKUP = MapUtil.newHashMap().values(values(), TBPCategory::id);
+        private static final Map<Category, TBPCategory> BASE_LOOKUP = MapUtil.newHashMap().fill(m -> {
+            for (TBPCategory category : values()) {
+                if (category.baseCategory != null) {
+                    m.put(category.baseCategory, category);
+                }
+            }
+        });
+        
+        private final Common baseCategory;
+        private final TBPCategory parentCategory;
+        
+        private final int id;
+        
+        TBPCategory(@Nonnull TBPCategory parentCategory) {
+            this(null, parentCategory);
+        }
+        
+        TBPCategory(@Nonnull Common baseCategory, int id) {
+            this(baseCategory, null, id);
+        }
+        
+        TBPCategory(@Nonnull TBPCategory parentCategory, int id) {
+            this(null, parentCategory, id);
+        }
+        
+        TBPCategory(@Nullable Common category, @Nonnull TBPCategory parentCategory) {
+            this.baseCategory = category;
+            this.parentCategory = parentCategory;
+            this.id = parentCategory.id + ordinal() - parentCategory.ordinal();
+        }
+        
+        TBPCategory(@Nullable Common category, @Nullable TBPCategory parentCategory, int id) {
+            this.baseCategory = category;
+            this.parentCategory = parentCategory;
+            this.id = id;
+        }
+        
+        public int id() {
+            return id;
+        }
+        
+        @Override
+        public Common getBaseCategory() {
+            return baseCategory != null ? baseCategory : parentCategory != null ? parentCategory.getBaseCategory() : Common.ALL;
+        }
+        
+        @Override
+        public boolean isIn(Category category) {
+            return this == category || baseCategory != null && baseCategory.isIn(category) || parentCategory != null && parentCategory.isIn(category);
+        }
+        
+        public static Category parse(String category) {
+            if (!"all".equals(category)) {
+                try {
+                    return REVERSE_LOOKUP.get(Integer.parseInt(category));
+                }
+                catch (NumberFormatException ignored) {}
+            }
+            return Common.ALL;
+        }
+        
+        public static TBPCategory wrap(Category category) {
+            return BASE_LOOKUP.getOrDefault(category, UNKNOWN);
+        }
+        
+        public static Object getFilePart(Category category) {
+            TBPCategory cat = wrap(category);
+            return (cat.id < 0 ? "all" : cat.id);
+        }
     }
     
     protected static class TPBTorrent extends BasicTorrent {
@@ -113,8 +293,8 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
             return status;
         }
         
-        public int getCategory() {
-            return Integer.parseInt(category);
+        public Category getCategory() {
+            return TBPCategory.parse(category);
         }
     }
 }

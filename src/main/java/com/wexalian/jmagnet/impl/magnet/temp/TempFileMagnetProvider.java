@@ -1,40 +1,37 @@
 package com.wexalian.jmagnet.impl.magnet.temp;
 
-import com.wexalian.jmagnet.api.Magnet;
+import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.api.provider.IMagnetProvider;
-import com.wexalian.jmagnet.api.provider.SearchOptions;
-import com.wexalian.jmagnet.parser.MagnetParser;
 import com.wexalian.nullability.annotations.Nonnull;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.Set;
 
 public class TempFileMagnetProvider implements IMagnetProvider {
     private static final Path MAGNETS_FILE = Path.of(System.getProperty("user.dir"), "magnets", "magnets_lars.txt");
+    public static final Set<MagnetInfo.Category> SUPPORTED = Set.of(MagnetInfo.Category.Common.ALL);
     
     @Override
     public String getName() {
         return "Temp debug file";
     }
     
+    // @Nonnull
+    // @Override
+    // public List<Magnet> popular(int page, int limit) {
+    //     try (Stream<String> magnetLinks = Files.lines(MAGNETS_FILE).parallel()) {
+    //         return magnetLinks.map(MagnetParser::parse).toList();
+    //     }
+    //     catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return List.of();
+    // }
+    
     @Nonnull
     @Override
-    public List<Magnet> recommended(int page) {
-        try (Stream<String> magnetLinks = Files.lines(MAGNETS_FILE).parallel()) {
-            return magnetLinks.map(MagnetParser::parse).toList();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return List.of();
-    }
-    
-    @Override
-    public @Nonnull List<Magnet> search(SearchOptions options) {
-        return List.of();
+    public Set<MagnetInfo.Category> supported() {
+        return SUPPORTED;
     }
     
     @Override

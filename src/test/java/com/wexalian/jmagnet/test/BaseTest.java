@@ -16,10 +16,9 @@ import java.util.ServiceLoader;
 public class BaseTest {
     protected static final Path PLUGIN_PATH = Path.of(System.getProperty("user.dir"), "plugins");
     
-    protected static final String TEST_MAGNET = "magnet:?xt=urn:btih:CCD685F5E1FC274CA019D42D01559B20778C4924&dn=Family%20Guy%20S21E01%201080p%20WEB%20H264-CAKES&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce";
     protected static final String TEST_MAGNET_NAME = "Family%20Guy%20S21E01%201080p%20WEB%20H264-CAKES";
     
-    protected static final MagnetInfo TEST_MAGNET_INFO = MagnetInfo.of("test");
+    protected static final MagnetInfo TEST_MAGNET_INFO = MagnetInfo.of("test", MagnetInfo.Category.Common.TV_SHOWS);
     
     static final boolean WRITE_FILES = true;
     static final boolean OVERWRITE_FILES = false;

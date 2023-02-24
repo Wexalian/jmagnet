@@ -14,19 +14,23 @@ import java.util.Objects;
 public final class Magnet {
     private final MagnetMap map;
     private final MagnetInfo info;
+    private final MagnetInfo.Category category;
     
     private final String urn;
     private final String name;
     private final List<Tracker> trackers;
     
+    
     public Magnet(MagnetMap map, MagnetInfo info) {
         this.map = map;
         this.info = info;
-        
+        this.category = info.getCategory();
+    
         this.urn = map.get(Parameter.EXACT_TOPIC);
         this.name = map.get(Parameter.DISPLAY_NAME);
         this.trackers = map.getList(Parameter.TRACKERS).as(Tracker::new);
         
+    
         TrackerCache.onMagnetLoaded(this);
     }
     
@@ -44,6 +48,10 @@ public final class Magnet {
     
     public List<Tracker> getTrackers() {
         return trackers;
+    }
+    
+    public MagnetInfo.Category getCategory() {
+        return category;
     }
     
     public String get(Parameter parameter) {

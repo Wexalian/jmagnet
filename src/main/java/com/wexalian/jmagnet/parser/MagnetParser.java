@@ -1,6 +1,7 @@
 package com.wexalian.jmagnet.parser;
 
 import com.wexalian.common.util.StringUtil;
+import com.wexalian.jmagnet.MagnetInfo.Category.Common;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetMap;
@@ -22,7 +23,7 @@ public class MagnetParser {
     
     @Nonnull
     public static Magnet parse(String magnetLink) {
-        return parse(magnetLink, MagnetInfo.of("unknown"));
+        return parse(magnetLink, MagnetInfo.of("unknown", Common.ALL));
     }
     
     public static int PARSED = 0;

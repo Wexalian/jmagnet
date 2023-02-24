@@ -1,36 +1,92 @@
 package com.wexalian.jmagnet.test;
 
 import com.wexalian.common.plugin.PluginLoader;
-import com.wexalian.jmagnet.api.provider.SearchOptions;
+import com.wexalian.common.stream.BiStream;
+import com.wexalian.jmagnet.MagnetInfo;
+import com.wexalian.jmagnet.MagnetInfo.Category.Common;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.provider.IMagnetProvider;
 import org.junit.jupiter.api.Test;
 
-import java.util.ServiceLoader;
+import java.util.*;
 
-public class MagnetProviderTest/* extends BaseTest*/{
-    public static final SearchOptions SEARCH_OPTIONS = SearchOptions.paged("tt10234724", "moon_knight", -1, -1, -1, 10);
+public class MagnetProviderTest/* extends BaseTest*/ {
+    private static final String IMDB_ID = "tt10234724";
+    private static final String SLUG = "moon_knight";
+    
+    private static final String SEARCH = "moon knight";
+    
+    public static final Common SEARCH_CATEGORY = Common.PORN;
     
     @Test
-    void testLoadProvidersRecommended() {
+    void testRecent() {
         PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class, ServiceLoader::load);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
-            long count = provider.recommended(0).size();
+            List<Magnet> recent = provider.recent(SEARCH_CATEGORY, 1, -1);
             long time = System.currentTimeMillis() - start;
             
-            System.out.println("Provider '" + provider.getName() + "' has loaded " + count + " magnets in " + time + " ms");
+            printDebugStats(recent);
+            
+            System.out.println("Provider '" + provider.getName() + "' has loaded " + recent.size() + " recent magnets in " + time + " ms");
         }
     }
     
     @Test
-    void testLoadProvidersSearchOption() {
+    void testPopular() {
         PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class, ServiceLoader::load);
         for (IMagnetProvider provider : providers) {
             long start = System.currentTimeMillis();
-            long count = provider.search(SEARCH_OPTIONS).size();
+            List<Magnet> popular = provider.popular(SEARCH_CATEGORY, 1, -1);
             long time = System.currentTimeMillis() - start;
             
-            System.out.println("Provider '" + provider.getName() + "' has loaded " + count + " magnets in " + time + " ms");
+            printDebugStats(popular);
+            
+            System.out.println("Provider '" + provider.getName() + "' has loaded " + popular.size() + " popular magnets in " + time + " ms");
         }
+    }
+    
+    @Test
+    void testShow() {
+        PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class, ServiceLoader::load);
+        for (IMagnetProvider provider : providers) {
+            long start = System.currentTimeMillis();
+            List<Magnet> shows = provider.show(IMDB_ID, SLUG, 1, -1);
+            long time = System.currentTimeMillis() - start;
+            
+            printDebugStats(shows);
+            
+            System.out.println("Provider '" + provider.getName() + "' has loaded " + shows.size() + " show magnets in " + time + " ms");
+        }
+    }
+    
+    @Test
+    void testSearch() {
+        PluginLoader<IMagnetProvider> providers = PluginLoader.load(IMagnetProvider.class, ServiceLoader::load);
+        for (IMagnetProvider provider : providers) {
+            long start = System.currentTimeMillis();
+            List<Magnet> searched = provider.search(SEARCH_CATEGORY, SEARCH, 1, -1);
+            long time = System.currentTimeMillis() - start;
+            
+            printDebugStats(searched);
+            
+            System.out.println("Provider '" + provider.getName() + "' has loaded " + searched.size() + " searched magnets in " + time + " ms");
+        }
+    }
+    
+    private void printDebugStats(List<Magnet> recent) {
+        System.out.println("--- MAGNET CATEGORY TEST (" + recent.size() + ") ---");
+        
+        Map<MagnetInfo.Category, Integer> statMap = new HashMap<>();
+        for (Magnet magnet : recent) {
+            Common baseCategory = magnet.getCategory().getBaseCategory();
+            statMap.put(baseCategory, statMap.getOrDefault(baseCategory, 0) + 1);
+        }
+        
+        BiStream.of(statMap)
+                .sortedByValue(Comparator.comparing(Integer::intValue).reversed())
+                .forEach((cat, count) -> System.out.println(cat.toString().toLowerCase() + ": " + count));
+        
+        System.out.println("---------------------------------");
     }
 }
