@@ -3,6 +3,7 @@ import com.wexalian.jmagnet.api.provider.ITrackerProvider;
 import com.wexalian.jmagnet.impl.magnet.eztv.EZTVMagnetProvider;
 import com.wexalian.jmagnet.impl.magnet.piratebay.TPBMagnetProvider;
 import com.wexalian.jmagnet.impl.magnet.temp.TempFileMagnetProvider;
+import com.wexalian.jmagnet.impl.tracker.NgosangTrackersProvider;
 import com.wexalian.jmagnet.impl.tracker.TrackerCacheProvider;
 
 module com.wexalian.jmagnet {
@@ -29,5 +30,5 @@ module com.wexalian.jmagnet {
     uses ITrackerProvider;
     
     provides IMagnetProvider with TPBMagnetProvider, EZTVMagnetProvider, TempFileMagnetProvider;
-    provides ITrackerProvider with TrackerCacheProvider;
+    provides ITrackerProvider with TrackerCacheProvider, NgosangTrackersProvider;
 }
