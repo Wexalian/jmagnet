@@ -1,10 +1,10 @@
 package com.wexalian.jmagnet.parser;
 
 import com.wexalian.common.util.StringUtil;
-import com.wexalian.jmagnet.MagnetInfo.Category.Common;
-import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.MagnetInfo;
+import com.wexalian.jmagnet.MagnetInfo.Category.Common;
 import com.wexalian.jmagnet.MagnetMap;
+import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.nullability.annotations.Nonnull;
 
 import java.util.ArrayList;
@@ -45,12 +45,12 @@ public class MagnetParser {
             
             info = builder.build();
         }
-    
+        
         return new Magnet(map, info);
     }
     
     @Nonnull
-    public static NameParseResult parseName(@Nonnull String magnetLink) {
+    public static NameParseResult parseMagnetUri(@Nonnull String magnetLink) {
         return parseDisplayName(decodeMagnetLink(magnetLink).get(Magnet.Parameter.DISPLAY_NAME));
     }
     
@@ -66,8 +66,9 @@ public class MagnetParser {
         return new MagnetMap(map);
     }
     
-    private static NameParseResult parseDisplayName(String name) {
-        name = name.replaceAll("%20", " ");
+    @Nonnull
+    public static NameParseResult parseDisplayName(@Nonnull String name) {
+        name = name.replaceAll("%20", " ").replace('.', ' ').replace('-', ' ');
         for (Pattern pattern : EPISODE_PATTERNS) {
             Matcher matcher = pattern.matcher(name.toLowerCase());
             if (matcher.find()) {
