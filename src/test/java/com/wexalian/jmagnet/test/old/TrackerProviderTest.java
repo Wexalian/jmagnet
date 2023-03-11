@@ -1,4 +1,4 @@
-package com.wexalian.jmagnet.test;
+package com.wexalian.jmagnet.test.old;
 
 import com.wexalian.common.plugin.PluginLoader;
 import com.wexalian.jmagnet.api.Tracker;
@@ -6,11 +6,12 @@ import com.wexalian.jmagnet.api.provider.ITrackerProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.ServiceLoader;
 
 public class TrackerProviderTest extends BaseTest{
     @Test
     void testLoadTrackers() {
-        Iterable<ITrackerProvider> providers = PluginLoader.load(ITrackerProvider.class);
+        PluginLoader<ITrackerProvider> providers = PluginLoader.load(ITrackerProvider.class, ServiceLoader::load);
         for (ITrackerProvider provider : providers) {
             long start = System.currentTimeMillis();
             List<Tracker> trackers = provider.load();

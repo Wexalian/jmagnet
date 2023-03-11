@@ -1,4 +1,4 @@
-package com.wexalian.jmagnet.test;
+package com.wexalian.jmagnet.test.old;
 
 import com.wexalian.common.plugin.PluginLoader;
 import com.wexalian.common.stream.BiStream;

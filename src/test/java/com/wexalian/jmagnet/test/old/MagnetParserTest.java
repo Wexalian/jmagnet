@@ -1,4 +1,4 @@
-package com.wexalian.jmagnet.test;
+package com.wexalian.jmagnet.test.old;
 
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.api.Magnet;
@@ -47,7 +47,7 @@ public class MagnetParserTest extends BaseTest{
     
     @Test
     void testParseMagnetName() {
-        MagnetParser.NameParseResult result = MagnetParser.parseName(TEST_MAGNET_NAME);
+        MagnetParser.NameParseResult result = MagnetParser.parseMagnetUri(TEST_MAGNET_NAME);
         
         assertTrue(result.isEpisode());
         assertFalse(result.isSeason());
