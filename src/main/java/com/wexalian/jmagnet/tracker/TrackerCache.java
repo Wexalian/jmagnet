@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -53,7 +54,7 @@ public final class TrackerCache {
     }
     
     private static void loadCustomTrackerProviders() {
-        PluginLoader.load(ITrackerProvider.class).forEach(provider -> provider.load());
+        PluginLoader.load(ITrackerProvider.class, ServiceLoader::load).forEach(ITrackerProvider::load);
     }
     
     public static void save() {
