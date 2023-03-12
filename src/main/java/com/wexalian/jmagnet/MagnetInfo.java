@@ -62,36 +62,51 @@ public class MagnetInfo {
         return seeds;
     }
     
+    public static MagnetInfo of(String provider) {
+        return builder(provider).build();
+    }
+    
     public static MagnetInfo of(String provider, Category category) {
-        return builder(provider, category).build();
+        return builder(provider).setCategory(category).build();
     }
     
     public static MagnetInfo of(String provider, Category category, int peers, int seeds) {
         return builder(provider, category, peers, seeds).build();
     }
     
-    public static MagnetInfo of(String provider, Category category, int peers, int seeds, int season) {
-        return builder(provider, category, peers, seeds, season).build();
-    }
+    // public static MagnetInfo of(String provider, Category category, int peers, int seeds, int season) {
+    //     return builder(provider, category, peers, seeds, season).build();
+    // }
+    //
+    // public static MagnetInfo of(String provider, Category category, int peers, int seeds, int season, int episode) {
+    //     return builder(provider, category, peers, seeds, season, episode).build();
+    // }
+    // public static MagnetInfo of(String provider, String formattedName, Category category, int peers, int seeds, int season, int episode) {
+    //     return builder(provider, formattedName, category, peers, seeds, season, episode).build();
+    // }
     
-    public static MagnetInfo of(String provider, Category category, int peers, int seeds, int season, int episode) {
-        return builder(provider, category, peers, seeds, season, episode).build();
+    public static Builder builder(String provider) {
+        return new Builder(provider).setCategory(Category.OTHER).setFormattedName("").setPeers(-1).setSeeds(-1);
     }
     
     public static Builder builder(String provider, Category category) {
-        return new Builder(provider, category, -1, -1).setSeason(-1).setEpisode(-1).setFormattedName("");
+        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(-1).setSeeds(-1);
     }
     
     public static Builder builder(String provider, Category category, int peers, int seeds) {
-        return new Builder(provider, category, peers, seeds).setSeason(-1).setEpisode(-1).setFormattedName("");
+        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(peers).setSeeds(seeds);
     }
     
     public static Builder builder(String provider, Category category, int peers, int seeds, int season) {
-        return new Builder(provider, category, peers, seeds).setSeason(season).setEpisode(-1).setFormattedName("");
+        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(peers).setSeeds(seeds).setSeason(season);
     }
     
     public static Builder builder(String provider, Category category, int peers, int seeds, int season, int episode) {
-        return new Builder(provider, category, peers, seeds).setSeason(season).setEpisode(episode).setFormattedName("");
+        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(peers).setSeeds(seeds).setSeason(season).setEpisode(season, episode);
+    }
+    
+    public static Builder builder(String provider, String formattedName, Category category, int peers, int seeds, int season, int episode) {
+        return new Builder(provider).setCategory(category).setFormattedName(formattedName).setPeers(peers).setSeeds(seeds).setSeason(season).setEpisode(season, episode);
     }
     
     public static Builder builder(MagnetInfo info) {
@@ -147,64 +162,46 @@ public class MagnetInfo {
         Category OTHER = Common.OTHER;
         
         boolean isIn(Category category);
-        
-        enum Common implements Category {
-            ALL,
-            
-            AUDIO,
-            MUSIC(AUDIO),
-            
-            VIDEO,
-            MOVIES(VIDEO),
-            TV_SHOWS(VIDEO),
-            
-            APPLICATIONS,
-            GAMES,
-            PORN,
-            OTHER;
-            
-            private final Common parent;
-            
-            Common() {
-                this(null);
-            }
-            
-            Common(Common parent) {
-                this.parent = parent;
-            }
-            
-            @Override
-            public Common getBaseCategory() {
-                return parent != null ? parent : this;
-            }
-            
-            @Override
-            public boolean isIn(Category category) {
-                return category == ALL || this == category || parent != null && parent.isIn(category);
-            }
-        }
     }
     
     public static class Builder {
         private final String provider;
-        private final Category category;
-        
-        private final int peers;
-        private final int seeds;
-        
-        private boolean isSeason;
-        private boolean isEpisode;
-        
-        private int season;
-        private int episode;
         
         private String formattedName;
         
-        private Builder(String provider, Category category, int peers, int seeds) {
+        private Category category;
+        
+        private int peers = -1;
+        private int seeds = -1;
+        
+        private boolean isSeason = false;
+        private boolean isEpisode = false;
+        
+        private int season = -1;
+        private int episode = -1;
+        
+        private Builder(String provider) {
             this.provider = provider;
+        }
+        
+        public Builder setFormattedName(String formattedName) {
+            this.formattedName = formattedName;
+            return this;
+        }
+        
+        public Builder setCategory(Category category) {
             this.category = category;
+            return this;
+        }
+        
+        public Builder setPeers(int peers) {
             this.peers = peers;
+            return this;
+        }
+        
+        public Builder setSeeds(int seeds) {
             this.seeds = seeds;
+            return this;
         }
         
         public Builder setSeason(int season) {
@@ -221,9 +218,9 @@ public class MagnetInfo {
             return this;
         }
         
-        public Builder setFormattedName(String formattedName) {
-            this.formattedName = formattedName;
-            return this;
+        public Builder setEpisode(int season, int episode) {
+            this.season = season;
+            return setEpisode(episode);
         }
         
         public MagnetInfo build() {
