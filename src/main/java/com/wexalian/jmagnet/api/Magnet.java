@@ -20,17 +20,15 @@ public final class Magnet {
     private final String name;
     private final List<Tracker> trackers;
     
-    
     public Magnet(MagnetMap map, MagnetInfo info) {
         this.map = map;
         this.info = info;
         this.category = info.getCategory();
-    
-        this.urn = map.get(Parameter.EXACT_TOPIC);
-        this.name = map.get(Parameter.DISPLAY_NAME);
+        
+        this.urn = map.getValue(Parameter.EXACT_TOPIC);
+        this.name = map.getValue(Parameter.DISPLAY_NAME);
         this.trackers = map.getList(Parameter.TRACKERS).as(Tracker::new);
         
-    
         TrackerCache.onMagnetLoaded(this);
     }
     
@@ -54,11 +52,11 @@ public final class Magnet {
         return category;
     }
     
-    public String get(Parameter parameter) {
-        return map.get(parameter);
+    public String getValue(Parameter parameter) {
+        return map.getValue(parameter);
     }
     
-    public List<String> getList(Parameter parameter) {
+    public List<String> getValues(Parameter parameter) {
         return map.getList(parameter);
     }
     
