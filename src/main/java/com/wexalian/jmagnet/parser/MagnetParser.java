@@ -2,13 +2,11 @@ package com.wexalian.jmagnet.parser;
 
 import com.wexalian.common.util.StringUtil;
 import com.wexalian.jmagnet.MagnetInfo;
-import com.wexalian.jmagnet.MagnetInfo.Category.Common;
+import com.wexalian.jmagnet.MagnetInfo.Category;
 import com.wexalian.jmagnet.MagnetMap;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.nullability.annotations.Nonnull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +21,7 @@ public class MagnetParser {
     
     @Nonnull
     public static Magnet parse(String magnetLink) {
-        return parse(magnetLink, MagnetInfo.of("unknown", Common.ALL));
+        return parse(magnetLink, MagnetInfo.of("unknown", Category.ALL));
     }
     
     public static int PARSED = 0;
@@ -34,14 +32,15 @@ public class MagnetParser {
         
         PARSED++;
         
-        if (!info.isSeason() || !info.isEpisode() || StringUtil.isBlank(info.getFormattedName())) {
+        if (!info.isSeason() || !info.isEpisode() || StringUtil.isBlank(info.getFormattedName()) || info.getCategory().isIn(Category.OTHER)) {
             MagnetInfo.Builder builder = MagnetInfo.builder(info);
             
-            String displayName = map.get(Magnet.Parameter.DISPLAY_NAME);
+            String displayName = map.getValue(Magnet.Parameter.DISPLAY_NAME);
             NameParseResult result = parseDisplayName(displayName);
-            if (result.isSeason) builder.setSeason(result.season);
-            if (result.isEpisode) builder.setEpisode(result.episode);
             builder.setFormattedName(result.formattedName);
+            if (result.isSeason) builder.setSeason(result.season);
+            if (result.isEpisode) builder.setEpisode(result.season, result.episode);
+            if (result.isSeason || result.isEpisode) builder.setCategory(Category.TV_SHOWS);
             
             info = builder.build();
         }
@@ -51,7 +50,7 @@ public class MagnetParser {
     
     @Nonnull
     public static NameParseResult parseMagnetUri(@Nonnull String magnetLink) {
-        return parseDisplayName(decodeMagnetLink(magnetLink).get(Magnet.Parameter.DISPLAY_NAME));
+        return parseDisplayName(decodeMagnetLink(magnetLink).getValue(Magnet.Parameter.DISPLAY_NAME));
     }
     
     private static MagnetMap decodeMagnetLink(String magnetLink) {
@@ -77,7 +76,7 @@ public class MagnetParser {
                 int season = Integer.parseInt(matcher.group(1));
                 int episode = Integer.parseInt(matcher.group(2));
                 
-                if (season != 0 && episode != 0) {
+                if (season > 0 && episode > 0) {
                     return new NameParseResult(name, false, true, season, episode);
                 }
             }
@@ -88,7 +87,7 @@ public class MagnetParser {
             if (matcher.find()) {
                 int season = Integer.parseInt(matcher.group(1));
                 
-                if (season != 0) {
+                if (season > 0) {
                     return new NameParseResult(name, true, false, season, -1);
                 }
             }
