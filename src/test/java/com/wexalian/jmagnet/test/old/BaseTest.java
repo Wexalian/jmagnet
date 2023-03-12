@@ -56,7 +56,7 @@ public class BaseTest {
                 
                 
                 for (String magnetUri : LIST_MAGNET_LINKS_LARS) {
-                    MagnetParser.NameParseResult result = MagnetParser.parseMagnetUri(magnetUri);
+                    MagnetParser.NameParseResult result = MagnetParser.parseName(magnetUri);
                     LIST_MAGNET_NAMES_PARSED.add(result.formattedName());
                 }
                 write(FILE_MAGNET_NAMES_PARSED, LIST_MAGNET_NAMES_PARSED);

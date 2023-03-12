@@ -48,7 +48,7 @@ public class MagnetParserTest extends BaseTest{
     
     @Test
     void testParseMagnetName() {
-        MagnetParser.NameParseResult result = MagnetParser.parseMagnetUri(TEST_MAGNET_NAME);
+        MagnetParser.NameParseResult result = MagnetParser.parseName(TEST_MAGNET);
         
         assertTrue(result.isEpisode());
         assertFalse(result.isSeason());
