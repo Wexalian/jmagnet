@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class TempFileMagnetProvider implements IMagnetProvider {
     private static final Path MAGNETS_FILE = Path.of(System.getProperty("user.dir"), "magnets", "magnets_lars.txt");
-    public static final Set<MagnetInfo.Category> SUPPORTED = Set.of(MagnetInfo.Category.Common.ALL);
+    public static final Set<MagnetInfo.Category> SUPPORTED = Set.of(MagnetInfo.Category.ALL);
     
     @Override
     public String getName() {

@@ -19,7 +19,7 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider<EZTVTorrent> {
     private static final String BASE_URL = "https://eztv.re/api/";
     private static final TypeToken<EZTVTorrent> TYPE_TOKEN = new TypeToken<>() {};
     
-    private static final Set<Category> SUPPORTED = Set.of(Category.Common.TV_SHOWS);
+    private static final Set<Category> SUPPORTED = Set.of(Category.TV_SHOWS);
     
     public EZTVMagnetProvider() {
         super(BASE_URL, TYPE_TOKEN, result -> result.getAsJsonObject().getAsJsonArray("torrents"));
@@ -47,7 +47,7 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider<EZTVTorrent> {
     @Nonnull
     @Override
     public List<Magnet> show(String imdbId, String slug, int page, int limit) {
-        return get(Category.Common.TV_SHOWS, "get-torrents", "imdb_id=" + imdbId);
+        return get(Category.TV_SHOWS, "get-torrents", "imdb_id=" + imdbId);
     }
     
     @Override
@@ -57,11 +57,7 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider<EZTVTorrent> {
         int season = torrent.getSeason();
         int episode = torrent.getEpisode();
         String title = torrent.getTitle();
-        MagnetInfo info = MagnetInfo.builder(getName(), Category.Common.TV_SHOWS, peers, seeds)
-                                    .setSeason(season)
-                                    .setEpisode(episode)
-                                    .setFormattedName(title)
-                                    .build();
+        MagnetInfo info = MagnetInfo.builder(getName(), Category.TV_SHOWS, peers, seeds, season, episode).setFormattedName(title).build();
         return MagnetParser.parse(torrent.getMagnetUri(), info);
     }
     

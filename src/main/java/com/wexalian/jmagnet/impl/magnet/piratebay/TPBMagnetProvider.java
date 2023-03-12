@@ -92,29 +92,29 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
     }
     
     public enum TBPCategory implements Category {
-        ALL(Common.ALL, -1),
-        UNKNOWN(Common.OTHER, -1),
+        ALL(Category.ALL, -1),
+        UNKNOWN(Category.OTHER, -1),
         
-        AUDIO(Common.AUDIO, 100),
-        AUDIO_MUSIC(Common.MUSIC, AUDIO),
+        AUDIO(Category.AUDIO, 100),
+        AUDIO_MUSIC(Category.MUSIC, AUDIO),
         AUDIO_BOOKS(AUDIO),
         AUDIO_SOUND_CLIPS(AUDIO),
         AUDIO_FLAC(AUDIO),
         AUDIO_OTHER(AUDIO, 199),
         
-        VIDEO(Common.VIDEO, 200),
-        VIDEO_MOVIES(Common.MOVIES, VIDEO),
-        VIDEO_MOVIES_DVDR(Common.MOVIES, VIDEO),
+        VIDEO(Category.VIDEO, 200),
+        VIDEO_MOVIES(Category.MOVIES, VIDEO),
+        VIDEO_MOVIES_DVDR(Category.MOVIES, VIDEO),
         VIDEO_MUSIC_VIDEOS(VIDEO),
         VIDEO_MOVIE_CLIPS(VIDEO),
-        VIDEO_TV_SHOWS(Common.TV_SHOWS, VIDEO),
+        VIDEO_TV_SHOWS(Category.TV_SHOWS, VIDEO),
         VIDEO_HANDHELD(VIDEO),
-        VIDEO_HD_MOVIES(Common.MOVIES, VIDEO),
-        VIDEO_HD_TV_SHOWS(Common.TV_SHOWS, VIDEO),
+        VIDEO_HD_MOVIES(Category.MOVIES, VIDEO),
+        VIDEO_HD_TV_SHOWS(Category.TV_SHOWS, VIDEO),
         VIDEO_3D(VIDEO),
         VIDEO_OTHER(VIDEO, 299),
         
-        APPLICATIONS(Common.APPLICATIONS, 300),
+        APPLICATIONS(Category.APPLICATIONS, 300),
         APPLICATIONS_WINDOWS(APPLICATIONS),
         APPLICATIONS_MAC(APPLICATIONS),
         APPLICATIONS_UNIX(APPLICATIONS),
@@ -123,7 +123,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
         APPLICATIONS_ANDROID(APPLICATIONS),
         APPLICATIONS_OTHER_OS(APPLICATIONS, 399),
         
-        GAMES(Common.GAMES, 400),
+        GAMES(Category.GAMES, 400),
         GAMES_PC(GAMES),
         GAMES_MAC(GAMES),
         GAMES_PSX(GAMES),
@@ -134,7 +134,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
         GAMES_ANDROID(GAMES),
         GAMES_OTHER(GAMES, 499),
         
-        PORN(Common.PORN, 500),
+        PORN(Category.PORN, 500),
         PORN_MOVIES(PORN),
         PORN_MOVIES_DVDR(PORN),
         PORN_PICTURES(PORN),
@@ -143,7 +143,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
         PORN_MOVIE_CLIPS(PORN),
         PORN_OTHER(PORN, 599),
         
-        OTHER(Common.OTHER, 600),
+        OTHER(Category.OTHER, 600),
         OTHER_EBOOKS(OTHER),
         OTHER_COMICS(OTHER),
         OTHER_PICTURES(OTHER),
@@ -160,7 +160,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
             }
         });
         
-        private final Common baseCategory;
+        private final Category baseCategory;
         private final TBPCategory parentCategory;
         
         private final int id;
@@ -169,7 +169,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
             this(null, parentCategory);
         }
         
-        TBPCategory(@Nonnull Common baseCategory, int id) {
+        TBPCategory(@Nonnull Category baseCategory, int id) {
             this(baseCategory, null, id);
         }
         
@@ -177,14 +177,14 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
             this(null, parentCategory, id);
         }
         
-        TBPCategory(@Nullable Common category, @Nonnull TBPCategory parentCategory) {
-            this.baseCategory = category;
+        TBPCategory(@Nullable Category baseCategory, @Nonnull TBPCategory parentCategory) {
+            this.baseCategory = baseCategory;
             this.parentCategory = parentCategory;
             this.id = parentCategory.id + ordinal() - parentCategory.ordinal();
         }
         
-        TBPCategory(@Nullable Common category, @Nullable TBPCategory parentCategory, int id) {
-            this.baseCategory = category;
+        TBPCategory(@Nullable Category baseCategory, @Nullable TBPCategory parentCategory, int id) {
+            this.baseCategory = baseCategory;
             this.parentCategory = parentCategory;
             this.id = id;
         }
@@ -193,10 +193,10 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
             return id;
         }
         
-        @Override
-        public Common getBaseCategory() {
-            return baseCategory != null ? baseCategory : parentCategory != null ? parentCategory.getBaseCategory() : Common.ALL;
-        }
+        // @Override
+        // public Category getBaseCategory() {
+        //     return baseCategory != null ? baseCategory : parentCategory != null ? parentCategory.getBaseCategory() : Category.ALL;
+        // }
         
         @Override
         public boolean isIn(Category category) {
@@ -210,7 +210,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
                 }
                 catch (NumberFormatException ignored) {}
             }
-            return Common.ALL;
+            return Category.ALL;
         }
         
         public static TBPCategory wrap(Category category) {
