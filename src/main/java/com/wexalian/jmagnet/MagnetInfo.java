@@ -130,9 +130,21 @@ public class MagnetInfo {
         }
     }
     
-    public interface Category{
+    public interface Category {
         
-        Category.Common getBaseCategory();
+        Category ALL = Common.ALL;
+        
+        Category AUDIO = Common.AUDIO;
+        Category MUSIC = Common.MUSIC;
+        
+        Category VIDEO = Common.VIDEO;
+        Category MOVIES = Common.MOVIES;
+        Category TV_SHOWS = Common.TV_SHOWS;
+        
+        Category APPLICATIONS = Common.APPLICATIONS;
+        Category GAMES = Common.GAMES;
+        Category PORN = Common.PORN;
+        Category OTHER = Common.OTHER;
         
         boolean isIn(Category category);
         
@@ -216,6 +228,37 @@ public class MagnetInfo {
         
         public MagnetInfo build() {
             return new MagnetInfo(provider, formattedName, category, isSeason, isEpisode, season, episode, peers, seeds);
+        }
+    }
+    
+    private enum Common implements Category {
+        ALL,
+        
+        AUDIO,
+        MUSIC(AUDIO),
+        
+        VIDEO,
+        MOVIES(VIDEO),
+        TV_SHOWS(VIDEO),
+        
+        APPLICATIONS,
+        GAMES,
+        PORN,
+        OTHER;
+        
+        private final Common parent;
+        
+        Common() {
+            this(null);
+        }
+        
+        Common(Common parent) {
+            this.parent = parent;
+        }
+        
+        @Override
+        public boolean isIn(Category other) {
+            return this == ALL || other == ALL || this == other || parent == other;
         }
     }
 }
