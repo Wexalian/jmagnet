@@ -55,15 +55,17 @@ public class MagnetParser {
     }
     
     private static MagnetMap decodeMagnetLink(String magnetLink) {
-        HashMap<Magnet.Parameter, List<String>> map = new HashMap<>();
-        
         Matcher matcher = PARTS_PATTERN.matcher(magnetLink);
-        while (matcher.find()) {
-            String param = matcher.group(1);
-            String value = matcher.group(2);
-            map.computeIfAbsent(Magnet.Parameter.get(param), k -> new ArrayList<>()).add(value);
-        }
-        return new MagnetMap(map);
+        
+        return MagnetMap.build(map -> {
+            while (matcher.find()) {
+                String param = matcher.group(1);
+                String value = matcher.group(2);
+                
+                map.addParameter(Magnet.Parameter.get(param), value);
+            }
+        });
+        
     }
     
     @Nonnull

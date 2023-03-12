@@ -11,7 +11,7 @@ public class MagnetMap {
     
     private final Map<Magnet.Parameter, ParameterValues> magnetMap;
     
-    public MagnetMap(Map<Magnet.Parameter, ParameterValues> magnetMap) {
+    private MagnetMap(Map<Magnet.Parameter, ParameterValues> magnetMap) {
         this.magnetMap = magnetMap;
     }
     
