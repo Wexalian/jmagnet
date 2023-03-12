@@ -35,6 +35,13 @@ public class JMagnet {
         else throw new IllegalStateException("JMagnet has to be initialized first");
     }
     
+    public static Magnet parse(String magnetUri, MagnetInfo defaultInfo) {
+        if (init) {
+            return MagnetParser.parse(magnetUri, defaultInfo);
+        }
+        else throw new IllegalStateException("JMagnet has to be initialized first");
+    }
+    
     public static void download(Magnet magnet) {
         if (init) {
         
