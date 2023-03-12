@@ -1,9 +1,15 @@
 package com.wexalian.jmagnet;
 
+import com.wexalian.nullability.annotations.Nonnull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class MagnetInfo {
     private final String provider;
     private final String formattedName;
     private final Category category;
+    private final Resolution resolution;
     
     private final boolean isSeason;
     private final boolean isEpisode;
@@ -14,10 +20,11 @@ public class MagnetInfo {
     private final int peers;
     private final int seeds;
     
-    MagnetInfo(String provider, String formattedName, Category category, boolean isSeason, boolean isEpisode, int season, int episode, int peers, int seeds) {
+    MagnetInfo(String provider, String formattedName, Category category, Resolution resolution, boolean isSeason, boolean isEpisode, int season, int episode, int peers, int seeds) {
         this.provider = provider;
         this.formattedName = formattedName;
         this.category = category;
+        this.resolution = resolution;
         this.isSeason = isSeason;
         this.isEpisode = isEpisode;
         this.season = season;
@@ -36,6 +43,10 @@ public class MagnetInfo {
     
     public Category getCategory() {
         return category;
+    }
+    
+    public Resolution getResolution() {
+        return resolution;
     }
     
     public boolean isSeason() {
@@ -113,25 +124,43 @@ public class MagnetInfo {
         return builder(info.provider, info.category, info.peers, info.seeds, info.season, info.episode).setFormattedName(info.formattedName);
     }
     
-    public enum Resolution {
-        _2160P("2160p", 3840, 2160),
-        _1440P("1440p", 2560, 1440),
-        _1080P("1080p", 1920, 1080),
-        _720P("720p", 1280, 720),
-        _480P("480p", 640, 360),
-        _360P("360p", 640, 360),
-        UNKNOWN("unknown", -1, -1);
+    public static class Resolution {
+        private static final Map<String, Resolution> RESOLUTION_MAP = new HashMap<>();
+        
+        public static final Resolution _2160P = new Resolution("2160p", 3840, 2160);
+        public static final Resolution _1440P = new Resolution("1440p", 2560, 1440);
+        public static final Resolution _1080P = new Resolution("1080p", 1920, 1080);
+        public static final Resolution _720P = new Resolution("720p", 1280, 720);
+        public static final Resolution _480P = new Resolution("480p", 865, 480);
+        public static final Resolution _360P = new Resolution("360p", 640, 360);
+        
+        public static final Resolution HDTV = new Resolution("HDTV", _720P);
+        
+        public static final Resolution UNKNOWN = new Resolution("UNKNOWN", -1, -1);
         
         private final String name;
         private final int width;
         private final int height;
+        private final Resolution base;
         
-        Resolution(String name, int width, int height) {
+        private Resolution(String name, Resolution base) {
+            this(name, base, base.width, base.height);
+        }
+        
+        private Resolution(String name, int width, int height) {
+            this(name, null, width, height);
+        }
+        
+        private Resolution(String name, Resolution base, int width, int height) {
             this.name = name;
             this.width = width;
             this.height = height;
+            this.base = base;
+            
+            RESOLUTION_MAP.put(name, this);
         }
         
+        @Nonnull
         public String getName() {
             return name;
         }
@@ -142,6 +171,40 @@ public class MagnetInfo {
         
         public int getHeight() {
             return height;
+        }
+        
+        public static Resolution get(String displayName) {
+            Resolution best = UNKNOWN;
+            for (String part : displayName.split(" ")) {
+                if (RESOLUTION_MAP.containsKey(part)) {
+                    Resolution resolution = RESOLUTION_MAP.get(part);
+                    if (best.width < resolution.width) {
+                        best = resolution;
+                    }
+                }
+            }
+            return best;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            // Resolution that = (Resolution) o;
+            return base == null ? super.equals(o) : base.equals(o);
+            // if(base == null) re
+            // if (that.base == null) return false;
+            // return super.equals(that.base);
+        }
+        
+        @Override
+        public int hashCode() {
+            return base == null ? super.hashCode() : base.hashCode();
+        }
+        
+        @Override
+        public String toString() {
+            return name;
         }
     }
     
@@ -167,9 +230,9 @@ public class MagnetInfo {
     public static class Builder {
         private final String provider;
         
-        private String formattedName;
-        
-        private Category category;
+        private String formattedName = "";
+        private Category category = Category.OTHER;
+        private Resolution resolution = Resolution.UNKNOWN;
         
         private int peers = -1;
         private int seeds = -1;
@@ -191,6 +254,11 @@ public class MagnetInfo {
         
         public Builder setCategory(Category category) {
             this.category = category;
+            return this;
+        }
+        
+        public Builder setResolution(Resolution resolution) {
+            this.resolution = resolution;
             return this;
         }
         
@@ -224,7 +292,7 @@ public class MagnetInfo {
         }
         
         public MagnetInfo build() {
-            return new MagnetInfo(provider, formattedName, category, isSeason, isEpisode, season, episode, peers, seeds);
+            return new MagnetInfo(provider, formattedName, category, resolution, isSeason, isEpisode, season, episode, peers, seeds);
         }
     }
     
