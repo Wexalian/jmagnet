@@ -1,3 +1,10 @@
 package com.wexalian.jmagnet.api;
 
-public record Tracker(String uri) {}
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
+public record Tracker(String uri) {
+    public Tracker(String uri) {
+        this.uri = URLDecoder.decode(uri, StandardCharsets.UTF_8);
+    }
+}
