@@ -6,50 +6,47 @@ public abstract class BasicTorrent {
     }
     
     public String getImdbId() {
-        return null;
+        return "";
     }
     
     public String getHash() {
-        
-        return null;
+        return "";
     }
     
     public String getFilename() {
-        return null;
+        return "";
     }
     
     public String getTitle() {
-        
-        return null;
+        return "";
     }
     
     public String getMagnetUri() {
-        
-        return null;
+        return "";
     }
     
     public int getSeason() {
-        return Integer.MIN_VALUE;
+        return -1;
     }
     
     public int getEpisode() {
-        return Integer.MIN_VALUE;
+        return -1;
     }
     
     public int getSeeds() {
-        return Integer.MIN_VALUE;
+        return -1;
     }
     
     public int getPeers() {
-        return Integer.MIN_VALUE;
+        return -1;
     }
     
     public long getReleaseDate() {
-        return Long.MIN_VALUE;
+        return -1;
     }
     
     public long getSizeInBytes() {
-        return Long.MIN_VALUE;
+        return -1;
     }
     
     //TODO make single torrent with different names
