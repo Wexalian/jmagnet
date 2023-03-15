@@ -51,7 +51,7 @@ public class MagnetParser {
     
     @Nonnull
     public static NameParseResult parseName(@Nonnull String magnetLink) {
-        String name = decodeMagnetLinkParameter(magnetLink, Magnet.Parameter.DISPLAY_NAME);
+        String name = decodeMagnetLinkName(magnetLink);
         return parseDisplayName(name);
     }
     
@@ -78,14 +78,14 @@ public class MagnetParser {
         });
     }
     
-    private static String decodeMagnetLinkParameter(String magnetLink, Magnet.Parameter parameter) {
+    private static String decodeMagnetLinkName(String magnetLink) {
         Matcher matcher = PARTS_PATTERN.matcher(magnetLink);
         
         while (matcher.find()) {
             String param = matcher.group(1);
             String value = matcher.group(2);
             
-            if (Magnet.Parameter.get(param) == parameter) return value;
+            if (Magnet.Parameter.get(param) == Magnet.Parameter.DISPLAY_NAME) return value;
         }
         return "";
     }
