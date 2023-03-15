@@ -5,10 +5,12 @@ import com.wexalian.common.stream.BiStream;
 import com.wexalian.jmagnet.MagnetInfo.Category;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.provider.IMagnetProvider;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+@Disabled
 public class MagnetProviderTest/* extends TestBase*/ {
     private static final String IMDB_ID = "tt10234724";
     private static final String SLUG = "moon_knight";

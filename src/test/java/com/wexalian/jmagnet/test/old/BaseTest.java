@@ -4,6 +4,7 @@ import com.wexalian.common.unchecked.Unchecked;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.parser.MagnetParser;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 public class BaseTest {
     protected static final Path PLUGIN_PATH = Path.of(System.getProperty("user.dir"), "plugins");
     

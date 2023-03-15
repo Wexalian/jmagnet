@@ -3,11 +3,13 @@ package com.wexalian.jmagnet.test.old;
 import com.wexalian.common.plugin.PluginLoader;
 import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.api.provider.ITrackerProvider;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.ServiceLoader;
 
+@Disabled
 public class TrackerProviderTest extends BaseTest{
     @Test
     void testLoadTrackers() {
