@@ -11,16 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class JMagnetTest extends TestBase {
     
-    // @BeforeAll
-    // static void init() {
-    //     JMagnet.init();
-    // }
-    
     @Test
     void testParseMagnet() {
         Magnet magnet = JMagnet.parse(TheFlash9x05.MAGNET_URI, MagnetInfo.of(TheFlash9x05.MAGNET_PROVIDER));
         assertMagnet(TheFlash9x05.TEST_MAGNET, magnet);
-        
+    
         printMagnet(magnet);
     }
     

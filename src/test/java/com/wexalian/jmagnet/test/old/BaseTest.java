@@ -2,7 +2,6 @@ package com.wexalian.jmagnet.test.old;
 
 import com.wexalian.common.unchecked.Unchecked;
 import com.wexalian.jmagnet.MagnetInfo;
-import com.wexalian.jmagnet.MagnetInfo.Category;
 import com.wexalian.jmagnet.parser.MagnetParser;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -17,7 +16,7 @@ public class BaseTest {
     
     protected static final String TEST_MAGNET_NAME = "Family%20Guy%20S21E01%201080p%20WEB%20H264-CAKES";
     
-    protected static final MagnetInfo TEST_MAGNET_INFO = MagnetInfo.of("test", Category.TV_SHOWS);
+    protected static final MagnetInfo TEST_MAGNET_INFO = MagnetInfo.of("test");
     
     static final boolean WRITE_FILES = true;
     static final boolean OVERWRITE_FILES = false;

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.wexalian.common.gson.GsonUtil;
 import com.wexalian.common.util.StringUtil;
+import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetInfo.Category;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.provider.IMagnetProvider;
@@ -63,73 +64,6 @@ public abstract class HTTPMagnetProvider<T> implements IMagnetProvider {
     @Nullable
     protected abstract Magnet parseTorrent(T torrent);
     
-    // protected JsonArray getJsonData(JsonElement result) {
-    //     if (jsonDataFunc != null) {
-    //         return jsonDataFunc.apply(result);
-    //     }
-    //     else throw new IllegalStateException("You need to either set a jsonDataFunc or overwrite the getJsonData method!");
-    // }
-    //
-    
-    // protected Pair<Integer, String[]> getQuery(SearchOptions options, int page) {
-    //     String[] query = new String[3];
-    //     int optLimit = options.limit();
-    //     int maxPages = options.maxPages();
-    //     int limit = -1;
-    //
-    //     query[0] = type.get(options.keywords());
-    //     if (optLimit > 0 || maxLimit > 0) {
-    //         limit = optLimit > 0 ? maxLimit > 0 ? Math.min(optLimit, maxLimit) : optLimit : maxLimit;
-    //         query[1] = "limit=" + limit;
-    //     }
-    //     if (pagination && maxPages > 1 && page > 1) query[2] = "page=" + page;
-    //     return Pair.of(limit, query);
-    // }
-    //
-    // protected String[] getQuery(String imdbId, String slug, int limit, int page) {
-    //     String[] query = new String[3];
-    //     query[0] = type.get(imdbId, slug);
-    //     if(limit > 0) query[1] = "limit=" + limit;
-    //     if(page > 0) query[2] = "page=" + page;
-    //     return query;
-    // }
-    //
-    // @Nonnull
-    // @Override
-    // public final List<Magnet> show(String imdbId, String slug, int limit, int page) {
-    
-    // List<Magnet> magnets = new ArrayList<>();
-    //
-    // int page = 1;
-    // var query = getQuery(options, page);
-    // JsonElement result = getAndParse(query.getRight());
-    //
-    // int duplicate = 0;
-    // JsonArray torrentJsons;
-    // while ((torrentJsons = getJsonData(result)) != null && torrentJsons.size() > 0) {
-    //     for (JsonElement torrentJson : torrentJsons) {
-    //         T torrent = GsonUtil.fromJsonElement(torrentJson, typeToken.getType());
-    //         Magnet magnet = parseTorrent(torrent);
-    //         if (!magnets.contains(magnet)) {
-    //             magnets.add(magnet);
-    //         }
-    //         else duplicate++;
-    //     }
-    //
-    //     System.out.print("--- Magnet provider '" + getName() + "' loaded " + torrentJsons.size() + " torrents from page " + page + "/" + (pagination ? options.maxPages() : 1));
-    //
-    //     int limit = query.getLeft();
-    //     if (limit <= 0) System.out.println(" without a page limit");
-    //     else System.out.println(" with a page limit of " + limit);
-    //
-    //     if (!pagination || ++page > options.maxPages()) break;
-    //     query = getQuery(options, page);
-    //     result = getAndParse(query.getRight());
-    // }
-    // System.out.println("Duplicate torrents found: " + duplicate);
-    // return magnets;
-    // }
-    
     protected final JsonElement getJson(String endpoint, String[] query) {
         if (query == null) return getJson(endpoint);
         return getJson(baseUrl + endpoint + "?" + StringUtil.join(query, "&"));
@@ -150,5 +84,14 @@ public abstract class HTTPMagnetProvider<T> implements IMagnetProvider {
     
     public final void setMaxLimit(int maxLimit) {
         this.maxLimit = maxLimit;
+    }
+    
+    protected final MagnetInfo createMagnetInfo(BasicTorrent torrent, Category category) {
+        int peers = torrent.getPeers();
+        int seeds = torrent.getSeeds();
+        int season = torrent.getSeason();
+        int episode = torrent.getEpisode();
+        
+        return MagnetInfo.of(getName(), "", category, peers, seeds, season, episode);
     }
 }

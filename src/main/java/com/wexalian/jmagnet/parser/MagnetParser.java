@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.wexalian.jmagnet.MagnetInfo.*;
-
 public class MagnetParser {
     private static final Pattern PARTS_PATTERN = Pattern.compile("([a-z]{2})=(.*?)(?=\\Z|&(?![a-z]{1,4};))");
     
@@ -22,7 +20,7 @@ public class MagnetParser {
     
     @Nonnull
     public static Magnet parse(String magnetLink) {
-        return parse(magnetLink, of("unknown", Category.ALL));
+        return parse(magnetLink, MagnetInfo.of("magnet_parser_test"));
     }
     
     public static int PARSED = 0;
@@ -34,7 +32,7 @@ public class MagnetParser {
         PARSED++;
         
         if (shouldParseName(info)) {
-            Builder builder = builder(info);
+            MagnetInfo.Builder builder = MagnetInfo.builder(info);
             
             String displayName = map.getValue(Magnet.Parameter.DISPLAY_NAME);
             NameParseResult result = parseDisplayName(displayName);
@@ -43,7 +41,7 @@ public class MagnetParser {
             builder.setResolution(result.resolution);
             if (result.isSeason) builder.setSeason(result.season);
             if (result.isEpisode) builder.setEpisode(result.season, result.episode);
-            if (result.isSeason || result.isEpisode) builder.setCategory(Category.TV_SHOWS);
+            if (result.isSeason || result.isEpisode) builder.setCategory(MagnetInfo.Category.TV_SHOWS);
             
             info = builder.build();
         }
@@ -51,20 +49,20 @@ public class MagnetParser {
         return new Magnet(map, info);
     }
     
+    @Nonnull
+    public static NameParseResult parseName(@Nonnull String magnetLink) {
+        String name = decodeMagnetLinkParameter(magnetLink, Magnet.Parameter.DISPLAY_NAME);
+        return parseDisplayName(name);
+    }
+    
     private static boolean shouldParseName(MagnetInfo info) {
         boolean isSeason = info.isSeason();
         boolean isEpisode = info.isEpisode();
         boolean hasFormattedName = StringUtil.isBlank(info.getFormattedName());
-        boolean hasCategory = info.getCategory().isIn(Category.OTHER);
-        boolean hasResolution = info.getResolution() == Resolution.UNKNOWN;
+        boolean hasCategory = info.getCategory().isIn(MagnetInfo.Category.OTHER);
+        boolean hasResolution = info.getResolution() == MagnetInfo.Resolution.UNKNOWN;
         
         return !isSeason || !isEpisode || hasFormattedName || hasCategory || hasResolution;
-    }
-    
-    @Nonnull
-    public static NameParseResult parseName(@Nonnull String magnetLink) {
-        MagnetMap magnetMap = decodeMagnetLink(magnetLink);
-        return parseDisplayName(magnetMap.getValue(Magnet.Parameter.DISPLAY_NAME));
     }
     
     private static MagnetMap decodeMagnetLink(String magnetLink) {
@@ -80,10 +78,22 @@ public class MagnetParser {
         });
     }
     
+    private static String decodeMagnetLinkParameter(String magnetLink, Magnet.Parameter parameter) {
+        Matcher matcher = PARTS_PATTERN.matcher(magnetLink);
+        
+        while (matcher.find()) {
+            String param = matcher.group(1);
+            String value = matcher.group(2);
+            
+            if (Magnet.Parameter.get(param) == parameter) return value;
+        }
+        return "";
+    }
+    
     @Nonnull
     public static NameParseResult parseDisplayName(@Nonnull String name) {
         name = name.replaceAll("%20", " ").replace('.', ' ').replace('-', ' ');
-        var resolution = Resolution.get(name);
+        var resolution = MagnetInfo.Resolution.get(name);
         for (Pattern pattern : EPISODE_PATTERNS) {
             Matcher matcher = pattern.matcher(name.toLowerCase());
             if (matcher.find()) {
@@ -110,5 +120,5 @@ public class MagnetParser {
         return new NameParseResult(name, resolution, false, false, -1, -1);
     }
     
-    public record NameParseResult(String formattedName, Resolution resolution, boolean isSeason, boolean isEpisode, int season, int episode) {}
+    public record NameParseResult(String formattedName, MagnetInfo.Resolution resolution, boolean isSeason, boolean isEpisode, int season, int episode) {}
 }

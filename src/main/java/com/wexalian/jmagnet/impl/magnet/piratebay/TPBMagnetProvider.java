@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.wexalian.jmagnet.MagnetInfo.Category;
-import static com.wexalian.jmagnet.MagnetInfo.of;
 import static com.wexalian.jmagnet.impl.magnet.piratebay.TPBMagnetProvider.TPBTorrent;
 
 public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
@@ -31,7 +30,7 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
     public TPBMagnetProvider() {
         super(BASE_URL, TYPE_TOKEN);
         setPagination(false); // ThePirateBay does not support page limiting
-        setMaxLimit(-1);      //
+        setMaxLimit(-1);      // ThePirateBay does not support page sizes
     }
     
     @Override
@@ -81,14 +80,13 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
     @Nullable
     @Override
     protected Magnet parseTorrent(TPBTorrent torrent) {
-        int peers = torrent.getPeers();
-        int seeds = torrent.getSeeds();
-        
         MagnetMap magnetMap = MagnetMap.build(b -> {
             b.addParameter(Magnet.Parameter.EXACT_TOPIC, MAGNET_URI_SCHEME + torrent.getHash());
             b.addParameter(Magnet.Parameter.DISPLAY_NAME, torrent.getFilename());
         });
-        return MagnetParser.parse(magnetMap.createUri(), of(getName(), torrent.getCategory(), peers, seeds));
+        
+        Category category = torrent.getCategory();
+        return MagnetParser.parse(magnetMap.createUri(), createMagnetInfo(torrent, category));
     }
     
     public enum TBPCategory implements Category {
@@ -192,11 +190,6 @@ public class TPBMagnetProvider extends HTTPMagnetProvider<TPBTorrent> {
         public int id() {
             return id;
         }
-        
-        // @Override
-        // public Category getBaseCategory() {
-        //     return baseCategory != null ? baseCategory : parentCategory != null ? parentCategory.getBaseCategory() : Category.ALL;
-        // }
         
         @Override
         public boolean isIn(Category category) {

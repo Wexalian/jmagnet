@@ -1,5 +1,6 @@
 package com.wexalian.jmagnet.test;
 
+import com.wexalian.jmagnet.JMagnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetInfo.Resolution;
 import com.wexalian.jmagnet.MagnetMap;
@@ -21,21 +22,32 @@ public class TestBase {
     
     @BeforeAll
     static void init() throws IOException {
+        JMagnet.init();
         MagnetData.init();
     }
     
     protected static void assertMagnet(Magnet expected, Magnet actual) {
         assertNotNull(actual);
         
-        assertEquals(expected.getUrn(), actual.getUrn());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getTrackers(), actual.getTrackers());
+        assertEquals(expected.getUrn(), actual.getUrn(), "magnet urn doesnt match");
+        assertEquals(expected.getName(), actual.getName(), "magnet name doesnt match");
+        assertEquals(expected.getTrackers(), actual.getTrackers(), "magnet trackers dont match");
         
         for (Magnet.Parameter value : Magnet.Parameter.values()) {
-            assertEquals(expected.getValue(value), actual.getValue(value), "magnet parameter doesnt match");
+            assertListEquals(expected.getValues(value), actual.getValues(value), "magnet parameter values dont match");
         }
         
         assertMagnetInfo(expected.getInfo(), actual.getInfo());
+    }
+    
+    protected static <T> void assertListEquals(List<T> expected, List<T> actual, String reason) {
+        assertEquals(expected.size(), actual.size(), reason);
+        
+        for (int i = 0; i < expected.size(); i++) {
+            T expectedValue = expected.get(i);
+            T actualValue = actual.get(i);
+            assertEquals(expectedValue, actualValue, reason);
+        }
     }
     
     protected static void assertMagnetInfo(MagnetInfo expected, MagnetInfo actual) {
@@ -94,21 +106,20 @@ public class TestBase {
         protected static void init() throws IOException {
             MAGNET_LINKS_LARS = read(MAGNET_FILE_LARS);
             MAGNET_LINKS_COLIN = read(MAGNET_FILE_COLIN);
-            
             MAGNET_LINKS_PARSED = read(MAGNET_FILE_PARSED);
-            // MAGNET_LINKS_SEASONS = read(MAGNET_FILE_SEASONS);
-            // MAGNET_LINKS_EPISODES = read(MAGNET_FILE_EPISODES);
-            // MAGNET_LINKS_UNKNOWN = read(MAGNET_FILE_UNKNOWN);
             
             if (MAGNET_LINKS_PARSED.isEmpty()) {
-                
-                for (String magnetUri : MAGNET_LINKS_LARS) {
-                    MagnetParser.NameParseResult result = MagnetParser.parseName(magnetUri);
-                    
-                    MAGNET_LINKS_PARSED.add(result.formattedName());
-                }
-                Files.write(MAGNET_FILE_LARS, MAGNET_LINKS_LARS);
+                parse(MAGNET_FILE_LARS, MAGNET_LINKS_LARS);
+                parse(MAGNET_FILE_COLIN, MAGNET_LINKS_COLIN);
             }
+        }
+        
+        private static void parse(Path magnetFileLars, List<String> magnetLinksLars) throws IOException {
+            for (String magnetUri : magnetLinksLars) {
+                MagnetParser.NameParseResult result = MagnetParser.parseName(magnetUri);
+                MAGNET_LINKS_PARSED.add(result.formattedName());
+            }
+            Files.write(magnetFileLars, magnetLinksLars);
         }
         
         protected static List<String> read(Path path) throws IOException {
@@ -124,9 +135,9 @@ public class TestBase {
         protected static final String MAGNET_URI_720P = "magnet:?xt=urn:btih:536E0456E8C1C196FD7799773C5D22F7B79FF07C&dn=The.Flash.2014.S09E05.720p.HDTV.x265-MiNX[TGx]&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce";
         protected static final String MAGNET_URI_1080P = "magnet:?xt=urn:btih:5B64AC7BA15FC8969110959A37E7B082B760C173&dn=The%20Flash%202014%20S09E05%201080p%20HDTV%20x264-ATOMOS&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce";
         
-        protected static final String MAGNET_PROVIDER = "JMagnetTest";
-        
         protected static final String MAGNET_URI = MAGNET_URI_HDTV;
+        
+        protected static final String MAGNET_PROVIDER = "JMagnetTest";
         
         protected static final String MAGNET_FORMATTED_NAME = "The Flash 2014 S09E05 HDTV x264 TORRENTGALAXY";
         protected static final Category MAGNET_CATEGORY = Category.TV_SHOWS;
@@ -147,7 +158,7 @@ public class TestBase {
                                                                        .setEpisode(MAGNET_EPISODE)
                                                                        .build();
         
-        protected static final Magnet TEST_MAGNET = new Magnet(MagnetMap.build(m -> {
+        public static final MagnetMap TEST_MAGNET_MAP = MagnetMap.build(m -> {
             m.addParameter(Magnet.Parameter.DISPLAY_NAME, "The%20Flash%202014%20S09E05%20HDTV%20x264-TORRENTGALAXY");
             m.addParameter(Magnet.Parameter.EXACT_TOPIC, "urn:btih:C965FB0AE42A4624D714BC1F81013C62D31CEB59");
             
@@ -159,6 +170,8 @@ public class TestBase {
             m.addParameter(Magnet.Parameter.TRACKERS, "udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce");
             m.addParameter(Magnet.Parameter.TRACKERS, "udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce");
             m.addParameter(Magnet.Parameter.TRACKERS, "udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce");
-        }), TEST_MAGNET_INFO);
+        });
+        
+        protected static final Magnet TEST_MAGNET = new Magnet(TEST_MAGNET_MAP, TEST_MAGNET_INFO);
     }
 }

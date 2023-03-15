@@ -77,51 +77,65 @@ public class MagnetInfo {
         return builder(provider).build();
     }
     
-    public static MagnetInfo of(String provider, Category category) {
-        return builder(provider).setCategory(category).build();
+    public static MagnetInfo of(String provider, String formattedName, Category category, int peers, int seeds, int season, int episode) {
+        return new Builder(provider).setFormattedName(formattedName).setCategory(category).setPeers(peers).setSeeds(seeds).setEpisode(season, episode).build();
     }
-    
-    public static MagnetInfo of(String provider, Category category, int peers, int seeds) {
-        return builder(provider, category, peers, seeds).build();
-    }
-    
-    // public static MagnetInfo of(String provider, Category category, int peers, int seeds, int season) {
-    //     return builder(provider, category, peers, seeds, season).build();
-    // }
-    //
-    // public static MagnetInfo of(String provider, Category category, int peers, int seeds, int season, int episode) {
-    //     return builder(provider, category, peers, seeds, season, episode).build();
-    // }
-    // public static MagnetInfo of(String provider, String formattedName, Category category, int peers, int seeds, int season, int episode) {
-    //     return builder(provider, formattedName, category, peers, seeds, season, episode).build();
-    // }
     
     public static Builder builder(String provider) {
-        return new Builder(provider).setCategory(Category.OTHER).setFormattedName("").setPeers(-1).setSeeds(-1);
-    }
-    
-    public static Builder builder(String provider, Category category) {
-        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(-1).setSeeds(-1);
-    }
-    
-    public static Builder builder(String provider, Category category, int peers, int seeds) {
-        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(peers).setSeeds(seeds);
-    }
-    
-    public static Builder builder(String provider, Category category, int peers, int seeds, int season) {
-        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(peers).setSeeds(seeds).setSeason(season);
-    }
-    
-    public static Builder builder(String provider, Category category, int peers, int seeds, int season, int episode) {
-        return new Builder(provider).setCategory(category).setFormattedName("").setPeers(peers).setSeeds(seeds).setSeason(season).setEpisode(season, episode);
-    }
-    
-    public static Builder builder(String provider, String formattedName, Category category, int peers, int seeds, int season, int episode) {
-        return new Builder(provider).setCategory(category).setFormattedName(formattedName).setPeers(peers).setSeeds(seeds).setSeason(season).setEpisode(season, episode);
+        return new Builder(provider);
     }
     
     public static Builder builder(MagnetInfo info) {
-        return builder(info.provider, info.category, info.peers, info.seeds, info.season, info.episode).setFormattedName(info.formattedName);
+        return new Builder(info);
+    }
+    
+    public interface Category {
+        Category ALL = Common.ALL;
+        
+        Category AUDIO = Common.AUDIO;
+        Category MUSIC = Common.MUSIC;
+        
+        Category VIDEO = Common.VIDEO;
+        Category MOVIES = Common.MOVIES;
+        Category TV_SHOWS = Common.TV_SHOWS;
+        
+        Category APPLICATIONS = Common.APPLICATIONS;
+        Category GAMES = Common.GAMES;
+        Category PORN = Common.PORN;
+        Category OTHER = Common.OTHER;
+        
+        boolean isIn(Category category);
+    }
+    
+    private enum Common implements Category {
+        ALL,
+        
+        AUDIO,
+        MUSIC(AUDIO),
+        
+        VIDEO,
+        MOVIES(VIDEO),
+        TV_SHOWS(VIDEO),
+        
+        APPLICATIONS,
+        GAMES,
+        PORN,
+        OTHER;
+        
+        private final Common parent;
+        
+        Common() {
+            this(null);
+        }
+        
+        Common(Common parent) {
+            this.parent = parent;
+        }
+        
+        @Override
+        public boolean isIn(Category other) {
+            return this == ALL || other == ALL || this == other || parent.isIn(other);
+        }
     }
     
     public static class Resolution {
@@ -190,11 +204,7 @@ public class MagnetInfo {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            // Resolution that = (Resolution) o;
             return base == null ? super.equals(o) : base.equals(o);
-            // if(base == null) re
-            // if (that.base == null) return false;
-            // return super.equals(that.base);
         }
         
         @Override
@@ -206,25 +216,6 @@ public class MagnetInfo {
         public String toString() {
             return name;
         }
-    }
-    
-    public interface Category {
-        
-        Category ALL = Common.ALL;
-        
-        Category AUDIO = Common.AUDIO;
-        Category MUSIC = Common.MUSIC;
-        
-        Category VIDEO = Common.VIDEO;
-        Category MOVIES = Common.MOVIES;
-        Category TV_SHOWS = Common.TV_SHOWS;
-        
-        Category APPLICATIONS = Common.APPLICATIONS;
-        Category GAMES = Common.GAMES;
-        Category PORN = Common.PORN;
-        Category OTHER = Common.OTHER;
-        
-        boolean isIn(Category category);
     }
     
     public static class Builder {
@@ -242,6 +233,19 @@ public class MagnetInfo {
         
         private int season = -1;
         private int episode = -1;
+        
+        private Builder(MagnetInfo info) {
+            this.provider = info.provider;
+            this.formattedName = info.formattedName;
+            this.category = info.category;
+            this.resolution = info.resolution;
+            this.peers = info.peers;
+            this.seeds = info.seeds;
+            this.isSeason = info.isSeason;
+            this.isEpisode = info.isEpisode;
+            this.season = info.season;
+            this.episode = info.episode;
+        }
         
         private Builder(String provider) {
             this.provider = provider;
@@ -293,37 +297,6 @@ public class MagnetInfo {
         
         public MagnetInfo build() {
             return new MagnetInfo(provider, formattedName, category, resolution, isSeason, isEpisode, season, episode, peers, seeds);
-        }
-    }
-    
-    private enum Common implements Category {
-        ALL,
-        
-        AUDIO,
-        MUSIC(AUDIO),
-        
-        VIDEO,
-        MOVIES(VIDEO),
-        TV_SHOWS(VIDEO),
-        
-        APPLICATIONS,
-        GAMES,
-        PORN,
-        OTHER;
-        
-        private final Common parent;
-        
-        Common() {
-            this(null);
-        }
-        
-        Common(Common parent) {
-            this.parent = parent;
-        }
-        
-        @Override
-        public boolean isIn(Category other) {
-            return this == ALL || other == ALL || this == other || parent == other;
         }
     }
 }

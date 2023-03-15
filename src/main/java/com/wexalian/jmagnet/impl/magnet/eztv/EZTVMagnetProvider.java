@@ -52,12 +52,7 @@ public class EZTVMagnetProvider extends HTTPMagnetProvider<EZTVTorrent> {
     
     @Override
     public Magnet parseTorrent(EZTVTorrent torrent) {
-        int peers = torrent.getPeers();
-        int seeds = torrent.getSeeds();
-        int season = torrent.getSeason();
-        int episode = torrent.getEpisode();
-        String title = torrent.getTitle();
-        MagnetInfo info = MagnetInfo.builder(getName(), Category.TV_SHOWS, peers, seeds, season, episode).setFormattedName(title).build();
+        MagnetInfo info = createMagnetInfo(torrent, Category.TV_SHOWS);
         return MagnetParser.parse(torrent.getMagnetUri(), info);
     }
     

@@ -1,7 +1,6 @@
 package com.wexalian.jmagnet.test.old;
 
 import com.wexalian.jmagnet.MagnetInfo;
-import com.wexalian.jmagnet.MagnetInfo.Category;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.parser.MagnetParser;
@@ -29,11 +28,11 @@ public class MagnetParserTest extends BaseTest{
     @Test
     void testParseMagnets() {
         for (String magnetLink : LIST_MAGNET_LINKS_LARS) {
-            Magnet.parse(magnetLink, MagnetInfo.of("test", Category.TV_SHOWS));
+            Magnet.parse(magnetLink, MagnetInfo.of("test"));
         }
         
         for (String magnetLink : LIST_MAGNET_LINKS_COLIN) {
-            Magnet.parse(magnetLink, MagnetInfo.of("test", Category.TV_SHOWS));
+            Magnet.parse(magnetLink, MagnetInfo.of("test"));
         }
         
         System.out.println("total unique trackers: " + TrackerCache.getCachedTrackers());
