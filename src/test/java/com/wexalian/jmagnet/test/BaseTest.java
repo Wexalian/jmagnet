@@ -22,8 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class BaseTest {
     
     @BeforeAll
-    static void init() {
+    static void init() throws IOException {
         JMagnet.init();
+        MagnetListData.init();
     }
     
     protected static void assertMagnetEquals(Magnet expected, Magnet actual) {
@@ -92,7 +93,7 @@ public class BaseTest {
         System.out.println(text);
     }
     
-    protected static class MagnetData {
+    protected static class MagnetListData {
         protected static final Path MAGNET_DIR = Path.of("magnets");
         
         protected static final Path MAGNET_FILE_LARS = MAGNET_DIR.resolve("magnets_lars.txt");
