@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Disabled
-public class BaseTest {
+public class OldBaseTest {
     protected static final Path PLUGIN_PATH = Path.of(System.getProperty("user.dir"), "plugins");
     
     protected static final String TEST_MAGNET_NAME = "Family%20Guy%20S21E01%201080p%20WEB%20H264-CAKES";
@@ -64,7 +64,7 @@ public class BaseTest {
             }
         }
         catch (IOException e) {
-            throw new RuntimeException("Error loading magnet data in TestBase", e);
+            throw new RuntimeException("Error loading magnet data in OldBaseTest", e);
         }
     }
     

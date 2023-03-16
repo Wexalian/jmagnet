@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 @Disabled
-public class TrackerProviderTest extends BaseTest{
+public class TrackerProviderTestOld extends OldBaseTest {
     @Test
     void testLoadTrackers() {
         PluginLoader<ITrackerProvider> providers = PluginLoader.load(ITrackerProvider.class, ServiceLoader::load);

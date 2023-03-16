@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 @Disabled
-public class MagnetProviderTest/* extends TestBase*/ {
+public class MagnetProviderTest/* extends OldBaseTest*/ {
     private static final String IMDB_ID = "tt10234724";
     private static final String SLUG = "moon_knight";
     

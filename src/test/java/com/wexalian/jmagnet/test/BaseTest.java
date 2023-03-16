@@ -12,21 +12,21 @@ import org.junit.jupiter.api.BeforeAll;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.wexalian.jmagnet.MagnetInfo.Category;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TestBase {
+public class BaseTest {
     
     @BeforeAll
-    static void init() throws IOException {
+    static void init() {
         JMagnet.init();
-        MagnetData.init();
     }
     
-    protected static void assertMagnet(Magnet expected, Magnet actual) {
+    protected static void assertMagnetEquals(Magnet expected, Magnet actual) {
         assertNotNull(actual);
         
         assertEquals(expected.getUrn(), actual.getUrn(), "magnet urn doesnt match");
@@ -37,20 +37,10 @@ public class TestBase {
             assertListEquals(expected.getValues(value), actual.getValues(value), "magnet parameter values dont match");
         }
         
-        assertMagnetInfo(expected.getInfo(), actual.getInfo());
+        assertMagnetInfoEquals(expected.getInfo(), actual.getInfo());
     }
     
-    protected static <T> void assertListEquals(List<T> expected, List<T> actual, String reason) {
-        assertEquals(expected.size(), actual.size(), reason);
-        
-        for (int i = 0; i < expected.size(); i++) {
-            T expectedValue = expected.get(i);
-            T actualValue = actual.get(i);
-            assertEquals(expectedValue, actualValue, reason);
-        }
-    }
-    
-    protected static void assertMagnetInfo(MagnetInfo expected, MagnetInfo actual) {
+    protected static void assertMagnetInfoEquals(MagnetInfo expected, MagnetInfo actual) {
         assertEquals(expected.getProvider(), actual.getProvider(), "magnet provider doesnt match");
         assertEquals(expected.getFormattedName(), actual.getFormattedName(), "magnet formatted name doesnt match");
         assertEquals(expected.getCategory(), actual.getCategory(), "magnet category doesnt match");
@@ -64,6 +54,16 @@ public class TestBase {
         
         assertEquals(expected.getPeers(), actual.getPeers(), "magnet peers doesnt match");
         assertEquals(expected.getSeeds(), actual.getSeeds(), "magnet seeds doesnt match");
+    }
+    
+    protected static <T> void assertListEquals(List<T> expected, List<T> actual, String reason) {
+        assertEquals(expected.size(), actual.size(), reason);
+        
+        for (int i = 0; i < expected.size(); i++) {
+            T expectedValue = expected.get(i);
+            T actualValue = actual.get(i);
+            assertEquals(expectedValue, actualValue, reason);
+        }
     }
     
     protected static void printMagnet(Magnet magnet) {
@@ -109,24 +109,24 @@ public class TestBase {
             MAGNET_LINKS_PARSED = read(MAGNET_FILE_PARSED);
             
             if (MAGNET_LINKS_PARSED.isEmpty()) {
-                parse(MAGNET_FILE_LARS, MAGNET_LINKS_LARS);
-                parse(MAGNET_FILE_COLIN, MAGNET_LINKS_COLIN);
+                parse(MAGNET_LINKS_LARS);
+                parse(MAGNET_LINKS_COLIN);
+                Files.write(MAGNET_FILE_PARSED, MAGNET_LINKS_PARSED);
             }
         }
         
-        private static void parse(Path magnetFileLars, List<String> magnetLinksLars) throws IOException {
-            for (String magnetUri : magnetLinksLars) {
+        private static void parse(List<String> magnetLinks) {
+            for (String magnetUri : magnetLinks) {
                 MagnetParser.NameParseResult result = MagnetParser.parseName(magnetUri);
                 MAGNET_LINKS_PARSED.add(result.formattedName());
             }
-            Files.write(magnetFileLars, magnetLinksLars);
         }
         
         protected static List<String> read(Path path) throws IOException {
             if (Files.exists(path)) {
                 return Files.readAllLines(path);
             }
-            return List.of();
+            return new ArrayList<>();
         }
     }
     
