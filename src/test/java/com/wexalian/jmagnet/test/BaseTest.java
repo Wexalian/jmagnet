@@ -25,9 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BaseTest {
     
+    private static boolean init = false;
+    
     @BeforeAll
     static void init() {
-        JMagnet.init();
+        if(!init) {
+            JMagnet.init();
+            
+            init = true;
+        }
     }
     
     protected static void assertMagnetEquals(Magnet expected, Magnet actual) {
@@ -35,7 +41,7 @@ public class BaseTest {
         
         assertEquals(expected.getUrn(), actual.getUrn(), "magnet urn doesnt match");
         assertEquals(expected.getName(), actual.getName(), "magnet name doesnt match");
-        assertEquals(expected.getTrackers(), actual.getTrackers(), "magnet trackers dont match");
+        assertListEquals(expected.getTrackers(), actual.getTrackers(), "magnet trackers dont match");
         
         for (Magnet.Parameter value : Magnet.Parameter.values()) {
             assertListEquals(expected.getValues(value), actual.getValues(value), "magnet parameter values dont match");
