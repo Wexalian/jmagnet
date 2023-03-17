@@ -55,6 +55,36 @@ public class MagnetParser {
         return parseDisplayName(name);
     }
     
+    @Nonnull
+    public static NameParseResult parseDisplayName(@Nonnull String name) {
+        name = name.replaceAll("%20", " ").replace('.', ' ').replace('-', ' ');
+        var resolution = MagnetInfo.Resolution.get(name);
+        for (Pattern pattern : EPISODE_PATTERNS) {
+            Matcher matcher = pattern.matcher(name.toLowerCase());
+            if (matcher.find()) {
+                int season = Integer.parseInt(matcher.group(1));
+                int episode = Integer.parseInt(matcher.group(2));
+                
+                if (season > 0 && episode > 0) {
+                    return new NameParseResult(name, resolution, false, true, season, episode);
+                }
+            }
+        }
+        
+        for (Pattern pattern : SEASON_PATTERNS) {
+            Matcher matcher = pattern.matcher(name.toLowerCase());
+            if (matcher.find()) {
+                int season = Integer.parseInt(matcher.group(1));
+                
+                if (season > 0) {
+                    return new NameParseResult(name, resolution, true, false, season, -1);
+                }
+            }
+        }
+        
+        return new NameParseResult(name, resolution, false, false, -1, -1);
+    }
+    
     private static boolean shouldParseName(MagnetInfo info) {
         boolean isSeason = info.isSeason();
         boolean isEpisode = info.isEpisode();
@@ -88,36 +118,6 @@ public class MagnetParser {
             if (Magnet.Parameter.get(param) == Magnet.Parameter.DISPLAY_NAME) return value;
         }
         return "";
-    }
-    
-    @Nonnull
-    public static NameParseResult parseDisplayName(@Nonnull String name) {
-        name = name.replaceAll("%20", " ").replace('.', ' ').replace('-', ' ');
-        var resolution = MagnetInfo.Resolution.get(name);
-        for (Pattern pattern : EPISODE_PATTERNS) {
-            Matcher matcher = pattern.matcher(name.toLowerCase());
-            if (matcher.find()) {
-                int season = Integer.parseInt(matcher.group(1));
-                int episode = Integer.parseInt(matcher.group(2));
-                
-                if (season > 0 && episode > 0) {
-                    return new NameParseResult(name, resolution, false, true, season, episode);
-                }
-            }
-        }
-        
-        for (Pattern pattern : SEASON_PATTERNS) {
-            Matcher matcher = pattern.matcher(name.toLowerCase());
-            if (matcher.find()) {
-                int season = Integer.parseInt(matcher.group(1));
-                
-                if (season > 0) {
-                    return new NameParseResult(name, resolution, true, false, season, -1);
-                }
-            }
-        }
-        
-        return new NameParseResult(name, resolution, false, false, -1, -1);
     }
     
     public record NameParseResult(String formattedName, MagnetInfo.Resolution resolution, boolean isSeason, boolean isEpisode, int season, int episode) {}
