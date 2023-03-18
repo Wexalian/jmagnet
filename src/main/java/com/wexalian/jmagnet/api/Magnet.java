@@ -27,7 +27,7 @@ public final class Magnet {
         
         this.urn = map.getValue(Parameter.EXACT_TOPIC);
         this.name = map.getValue(Parameter.DISPLAY_NAME);
-        this.trackers = map.getList(Parameter.TRACKERS).as(Tracker::new);
+        this.trackers = map.getList(Parameter.TRACKERS).mapped(Tracker::new);
         
         TrackerCache.onMagnetLoaded(this);
     }

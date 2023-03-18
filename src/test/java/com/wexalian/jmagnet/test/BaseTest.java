@@ -1,6 +1,6 @@
 package com.wexalian.jmagnet.test;
 
-import com.wexalian.common.collection.wrapper.ListWrapper;
+import com.wexalian.common.util.FilesUtil;
 import com.wexalian.jmagnet.JMagnet;
 import com.wexalian.jmagnet.MagnetInfo;
 import com.wexalian.jmagnet.MagnetInfo.Resolution;
@@ -8,15 +8,14 @@ import com.wexalian.jmagnet.MagnetMap;
 import com.wexalian.jmagnet.api.Magnet;
 import com.wexalian.jmagnet.api.Tracker;
 import com.wexalian.jmagnet.parser.MagnetParser;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.wexalian.common.collection.wrapper.ListWrapper.wrap;
 import static com.wexalian.jmagnet.MagnetInfo.Category;
 import static com.wexalian.jmagnet.parser.MagnetParser.NameParseResult;
 import static com.wexalian.jmagnet.parser.MagnetParser.parseName;
@@ -28,8 +27,8 @@ public class BaseTest {
     private static boolean init = false;
     
     @BeforeAll
-    static void init() {
-        if(!init) {
+    static void init() throws IOException {
+        if (!init) {
             JMagnet.init();
             
             init = true;
@@ -117,33 +116,29 @@ public class BaseTest {
         protected static List<String> MAGNET_LINKS_LARS;
         protected static List<String> MAGNET_LINKS_COLIN;
         
-        protected static ListWrapper<NameParseResult> MAGNET_NAMES_PARSED;
-        protected static ListWrapper<NameParseResult> MAGNET_NAMES_PARSED_SEASON;
-        protected static ListWrapper<NameParseResult> MAGNET_NAMES_PARSED_EPISODE;
-        protected static ListWrapper<NameParseResult> MAGNET_NAMES_PARSED_OTHER;
+        protected static List<NameParseResult> MAGNET_NAMES_PARSED;
+        protected static List<NameParseResult> MAGNET_NAMES_PARSED_SEASON;
+        protected static List<NameParseResult> MAGNET_NAMES_PARSED_EPISODE;
+        protected static List<NameParseResult> MAGNET_NAMES_PARSED_OTHER;
         
         protected static void init() throws IOException {
-            MAGNET_LINKS_LARS = read(MAGNET_FILE_LARS);
-            MAGNET_LINKS_COLIN = read(MAGNET_FILE_COLIN);
+            MAGNET_LINKS_LARS = Files.readAllLines(MAGNET_FILE_LARS);
+            MAGNET_LINKS_COLIN = Files.readAllLines(MAGNET_FILE_COLIN);
             
-            MAGNET_NAMES_PARSED = read(MAGNET_FILE_PARSED).as(MagnetParser::parseDisplayName);
-            MAGNET_NAMES_PARSED_SEASON = read(MAGNET_FILE_PARSED_SEASON).as(MagnetParser::parseDisplayName);
-            MAGNET_NAMES_PARSED_EPISODE = read(MAGNET_FILE_PARSED_EPISODE).as(MagnetParser::parseDisplayName);
-            MAGNET_NAMES_PARSED_OTHER = read(MAGNET_FILE_PARSED_OTHER).as(MagnetParser::parseDisplayName);
+            MAGNET_NAMES_PARSED = FilesUtil.read(MAGNET_FILE_PARSED, MagnetParser::parseDisplayName);
+            MAGNET_NAMES_PARSED_SEASON = FilesUtil.read(MAGNET_FILE_PARSED_SEASON, MagnetParser::parseDisplayName);
+            MAGNET_NAMES_PARSED_EPISODE = FilesUtil.read(MAGNET_FILE_PARSED_EPISODE, MagnetParser::parseDisplayName);
+            MAGNET_NAMES_PARSED_OTHER = FilesUtil.read(MAGNET_FILE_PARSED_OTHER, MagnetParser::parseDisplayName);
             
             if (MAGNET_NAMES_PARSED.isEmpty()) {
                 parse(MAGNET_LINKS_LARS);
                 parse(MAGNET_LINKS_COLIN);
                 
-                write(MAGNET_FILE_PARSED, MAGNET_NAMES_PARSED.as(NameParseResult::formattedName));
-                write(MAGNET_FILE_PARSED_SEASON, MAGNET_NAMES_PARSED_SEASON.as(NameParseResult::formattedName));
-                write(MAGNET_FILE_PARSED_EPISODE, MAGNET_NAMES_PARSED_EPISODE.as(NameParseResult::formattedName));
-                write(MAGNET_FILE_PARSED_OTHER, MAGNET_NAMES_PARSED_OTHER.as(NameParseResult::formattedName));
+                FilesUtil.write(MAGNET_FILE_PARSED, MAGNET_NAMES_PARSED, NameParseResult::formattedName);
+                FilesUtil.write(MAGNET_FILE_PARSED_SEASON, MAGNET_NAMES_PARSED_SEASON, NameParseResult::formattedName);
+                FilesUtil.write(MAGNET_FILE_PARSED_EPISODE, MAGNET_NAMES_PARSED_EPISODE, NameParseResult::formattedName);
+                FilesUtil.write(MAGNET_FILE_PARSED_OTHER, MAGNET_NAMES_PARSED_OTHER, NameParseResult::formattedName);
             }
-        }
-        
-        private static Path write(Path path, List<String> parsedNames) throws IOException {
-            return Files.write(path, parsedNames);
         }
         
         private static void parse(List<String> magnetLinks) {
@@ -156,12 +151,14 @@ public class BaseTest {
                 else MAGNET_NAMES_PARSED_OTHER.add(result);
             }
         }
-        
-        protected static ListWrapper<String> read(Path path) throws IOException {
-            if (Files.exists(path)) {
-                return wrap(Files.readAllLines(path));
-            }
-            return ArrayList::new;
+    }
+    
+    @AfterAll
+    static void stop() throws IOException {
+        if (init) {
+            JMagnet.save();
+            
+            init = false;
         }
     }
     
