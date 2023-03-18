@@ -6,6 +6,7 @@ import com.wexalian.jmagnet.impl.tracker.NgosangTrackersProvider;
 
 module com.wexalian.jmagnet {
     requires com.wexalian.common;
+    requires com.wexalian.config;
     requires com.wexalian.nullability;
     requires com.google.gson;
     
